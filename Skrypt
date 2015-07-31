@@ -1,7 +1,7 @@
 #                                  #
 # Nazwa: Ntools (NaciukanyTools)   #
 # Autor: Naciukany ,               #
-# Wersja: 1.1v                     #
+# Wersja: 0.1v                     #
 #                                  #
 
 # Ustawienia Dropu ! #
@@ -35,20 +35,2549 @@ on join:
 #
 on quit:
         set leave message to "&9%player% Wychodzi z gry."
-# Aktualizacja #
+
+# Zapis Swiata i gildi. (funnyguilds)
+
+command /zapisz:
+	permission: Ntools.zapis
+	trigger:
+		broadcast "{@tag} &9Zapisywanie swiata..."
+		wait 2 seconds
+		execute console command "save-all"
+		broadcast "{@tag} &9Zapisywanie swiata zakonczone!"
+every 5 minutes:
+	broadcast "{@tag} &9Zapisywanie swiata..."
+	wait 2 seconds
+	execute console command "save-all"
+	broadcast "{@tag} &9Zapisywanie swiata zakonczone!"
+command /gzapisz:
+	permission: Ntools.zapis
+	trigger:
+		broadcast "{@tag} &9Zapisywanie gildii..."
+		wait 2 seconds
+		execute console command "funnyguilds save-all"
+		broadcast "{@tag} &9Zapisywanie dildii zakonczone!"
+every 5 minutes:
+	broadcast "{@tag} &9Zapisywanie gildii..."
+	wait 2 seconds
+	execute console command "funnyguilds save-all"
+	broadcast "{@tag} &9Zapisywanie gildii zakonczone!"
+
+# Helpop wiadomosc do administracji #
+options:
+        spamhelpop: 1
+command /helpop [<text>]:
+        trigger:
+                if arg 1 is set:
+                        send "{@tag} &9HelpOP %player%: %arg%" to all ops
+                        send "{@tag} &7Twoja wiadomosc zostala wyslana na helpop." to player
+                        set {helpop.%player%} to false
+                        wait {@spamhelpop} minute
+                        set {helpop.%player%} to true
+                if arg 1 is not set:
+                        send "{@tag} &8Prawidlowe uzycie /helpop <wiadomosc>"
+ 
+on command "/helpop":
+        if {helpop.%player%} is false:
+                cancel event
+                send "{@tag} &cNa helpop mozna pisac co 1 minute."
+				
+# Gamemode Tryby gry! #
+
+command /gm <integer> [<player>]:
+        trigger:
+                if player has permission "Ntools.gm":
+                        if arg 2 is set:
+                                if arg 1 is 1:
+                                        set the gamemode of argument 2 to creative
+                                        send "{@tag} &c%player% &9zmienil twoj tryb gry na &7(Creative)." to arg 2                                       
+                                        send "{@tag} &9Zminiels tryb gry gracza &c%arg 2% &9na &7(Creative)."
+                                        stop
+                                if arg 1 is 0:
+                                        set the gamemode of argument 2 to survival
+                                        send "{@tag} &c%player% &9zmienil twoj tryb gry na &7(Survival)." to arg 2                                       
+                                        send "{@tag} &9Zminiels tryb gry gracza &c%arg 2% &9na &7(Survival)."
+                                        stop
+                                if arg 1 is 2:
+                                        set the gamemode of argument 2 to adventure
+                                        send "{@tag} &c%player% &9zmienil twoj tryb gry na &7(Adventure)." to arg 2                                      
+                                        send "{@tag} &9Zminiels tryb gry gracza &c%arg 2% &9na &7(Adventure)."
+                                        stop
+                        else:
+                                if arg 1 is 1:
+                                        set the gamemode of the player to creative                             
+                                        send "{@tag} &9Zmeniles swoj tryb gry na &7(Creative)."
+                                        stop
+                                if arg 1 is 0:
+                                        set the gamemode of the player to survival                     
+                                        send "{@tag} &9Zmeniles swoj tryb gry na &7(Sruvival)."
+                                        stop
+                                if arg 1 is 2:
+                                        set the gamemode of the player to adventure                            
+                                        send "{@tag} &9Zmeniles swoj tryb gry na &7(Adventure)."
+                                        stop
+                else:
+                        send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.gm) "
+                        stop
+						
+ # Clear itemow z ziemi#
+ 
+every 1 minutes:
+	broadcast "{@tag} &7Pozostawione przedmioty zostana usuniete za &910 &7sekund!"
+	wait 10 seconds
+	execute console command "remove item 99999999"
+	broadcast "{@tag} &aPrzedmioty zostaly usuniete!"
+
+# Prywatne wiadomoscic#
+
+command /r [<text>]:
+        trigger:
+                if {ostatni.wysylajacy.chat.%name of player%} is set:
+                        if arg 1 is set:
+                                send "&9%player% &e-> &f: &7%arg 1%" to {ostatni.wysylajacy.chat.%name of player%}
+                                send "&9%{ostatni.wysylajacy.chat.%name of player%}% &e<- &f: &7%arg 1%"
+                        else:
+                                send "&c&lMuszisz podac wiadmosc !"
+                else:
+                        send "&c&lNie pisales z nikim wczesniej!"
+ 
+command /msg [<player>] [<text>]:
+        trigger:
+                if arg 1 is set:
+                        if arg player is online:
+                                if arg 2 is set:
+                                        if player has permission "*":
+                                                send "&9%player% &e-> &f: &7%arg 2%" to arg 1
+                                                send "&9%arg 1% &e<- &f: &7%arg 2%"
+                                                set {ostatni.wysylajacy.chat.%name of player%} to arg 1
+                                        else:
+                                                send "&9%player% &e-> &f: &7%arg 2%" to arg 1
+                                                send "&9%arg 1% &e-< &f: &7%arg 2%"
+                                                set {ostatni.wysylajacy.chat.%name of player%} to arg 1
+                                else:
+                                        send "&c&lMuszisz podac wiadmosc !"
+                        else:
+                                send "&c&lNie ma takiego gracza online!"
+                else:
+                        send "&C&lMusisz podac nick gracza!"
+						
+# Do czatu informacje #
+
+command /chatclear:
+        aliases: cc
+        trigger:
+                if player has permission "Ntools.chat":
+                        loop 98 times:
+                                broadcast ""                   
+                        broadcast "{@tag} &cChat zostal wyczyszcony przez %player%"
+                        stop
+                else:
+                        send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.chat)"
+                        stop
+command /chat [<text>]:
+        trigger:
+                if player has permission "Ntools.chat":
+                        if arg 1 is "on":
+                                set {Ntools.chat.allowed} to false
+                                broadcast ""
+                                broadcast "          {@tag}          "
+                                broadcast "     Chat zostal &2Wlaczony!   "
+                                broadcast ""
+                                broadcast ""
+                                stop
+                        if arg 1 is "off":
+                                set {Ntools.chat.allowed} to true
+                                broadcast ""
+                                broadcast "          {@tag}         "
+                                broadcast "     Chat zostal &4wylaczony!   "
+                                broadcast ""
+                                broadcast ""
+                                stop
+                        send "{@tag} &6Uzyj: &c/chat on/off"
+                        stop
+                else:
+                        send "&7Nie masz uprawnienia &7(Ntools.chat)"
+                        stop
+			
+			
+# Ustawiania Spawnu #
+
+command /setspawn:
+        trigger:
+                if player has permission "Ntools.setspawn":
+                        set {Ntools.spawn} to location of player
+                        send "{@tag} &7Ustawiono spawn!"
+                        stop
+                else:
+                        send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.setspawn)"
+                        stop
+ 
+command /spawn:
+        trigger:
+                if player has permission "Ntools.spawn":
+                        if {Ntools.spawn} is set:
+                                if {cooldown} is false:
+                                        teleport player to {Ntools.spawn}
+                                        send "{@tag} &7Teleportacja!"
+                                        stop
+                                else:
+                                        set {_pos} to location of player
+                                        send "{@tag}&7Czekaj &65 sekund&7, nie wolno Ci sie ruszyc!"
+                                        if {_pos} isn't location of player:
+                                                send "{@tag}&cWykryto ruch, teleportacja anulowana!"
+                                                stop
+                                        wait 1 second
+                                        if {_pos} isn't location of player:
+                                                send "{@tag}&cWykryto ruch, teleportacja anulowana!"
+                                                stop
+                                        wait 1 second
+                                        if {_pos} isn't location of player:
+                                                send "{@tag}&cWykryto ruch, teleportacja anulowana!"
+                                                stop
+                                        wait 1 second
+                                        if {_pos} isn't location of player:
+                                                send "{@tag}&cWykryto ruch, teleportacja anulowana!"
+                                                stop
+                                        wait 1 second
+                                        if {_pos} isn't location of player:
+                                                send "{@tag}&cWykryto ruch, teleportacja anulowana!"
+                                                stop
+                                        wait 1 second
+                                        if {_pos} is location of player:
+                                                teleport player to {Ntools.spawn}
+                                                send "{@tag}&7Teleportacja..."
+                                                stop
+                                        else:
+                                                send "{@tag}&cWykryto ruch, teleportacja anulowana!"
+                                                stop
+                        else:
+                                send "{@tag} &cSpawn nie zostal ustawiony skontaktuj sie z administratorem!"
+                                stop
+                else:
+                        send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.spawn)"
+                        stop
+						
+# List all players:#
+
+command /list:
+	trigger:
+		send "&9-=-=-=-=-=-=-=-=-="
+		send "&7Online : &9%number of all players%"
+		send "&7Gracze: &9%all players%"
+		send "&9-=-=-=-=-=-=-=-=-="
+		stop
+		
+# Pogoda #
+
+command /sun:
+	aliases: slonce
+	trigger:
+		if player has permission "Ntools.sun":
+			set the weather in the player's world to sun
+			send "{@tag} &9Ustawiles pogode w swiecie &c%player's world% &9 na &csloneczna!"
+			stop
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.sun)"
+			stop
+command /rain:
+	aliases: deszcz
+	trigger:
+		if player has permission "Ntools.rain":
+			set the weather in the player's world to rain
+			send "{@tag} &9Ustawiles pogode w swiecie &c%player's world% &9 na &6deszczowa!"
+			stop
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.rain)"
+			stop
+			
+# Teleportaccja #
+
+command /tp [<player>] [<player>]:
+	trigger:
+		if player has permission "Ntools.tp":
+			if arg 1 is set:
+				if arg 2 is not set:
+					teleport player to argument 1
+					send "{@tag} &9Przeteleportowales sie do gracza &c%arg 1%" 
+					send "{@tag} &c%player% &9przeteleportowal sie do ciebie!" to argument 1
+					stop
+			if arg 1 is player:
+				if arg 2 is set:
+					teleport player to argument 2
+					send "{@tag} &9Przeteleportowales sie do gracza &c%arg 2%" 
+					send "{@tag} &c%player% 9bprzeteleportowal sie do ciebie!" to argument 2
+					stop
+			if arg 1 is set:
+				if arg 2 is player:
+					teleport argument 1 to the player
+					send "{@tag} &9Przeteleportowales gracza &c%arg 1%&b do siebie!" 
+					send "{@tag} &c%player% &9przeteleportowal cie do siebie!" to argument 1
+					stop
+			if arg 1 is set:
+				if arg 2 is set:
+					teleport argument 1 to argument 2
+					send "{@tag} &9Przeteleportowales gracza &c%arg 1%&b do &c%arg 2%!" 
+					send "{@tag} &c%player% &9przeteleportowal gracza &c%arg 1%&b do ciebie!" to argument 2
+					send "{@tag} &c%player% &9przeteleportowal gracza &c%arg 2%&b do ciebie!" to argument 1
+					stop				
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.tp)"
+			stop
+			
+command /tpall:
+	trigger:
+		if player has permission "Ntools.tpall":
+			teleport all players to the player
+			broadcast "{@tag} &cAdministrator &c%player% &9przteleportowal wszystkich do siebie!"
+			
+# Dodatki #
+
+command /afk:
+	trigger:
+		if player has permission "Ntools.afk":
+			if {afk.%player%} is not set:
+				set {afk.%player%} to true
+				send "{@tag} &9Wlaczono komende afk!"
+				stop
+			if {afk.%player%} is true:					
+				set {afk.%player%} to false
+				broadcast "<yellow>%player% <pink>jest teraz &fAFK"
+				stop
+			if {afk.%player%} is false:
+				set {afk.%player%} to true
+				broadcast "<yellow>%player% <pink>juz nie jest &fAFK"
+				stop
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.afk)"
+			stop
+
+command /mute [<player>]:
+	trigger:
+		if player has permission "Ntools.mute":
+			if arg 1 is set:
+				set {mute.%argument 1%} to true
+				send "{@tag} &9Zostales wyciszony" to argument 1 
+				send "{@tag} &9Wyciszyles gracza &6%arg 1%"
+				stop
+			else:
+				send "{@tag} &9Podaj nick gracza!"
+				stop
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.mute)"
+			stop
+command /fly [<player>]:
+	trigger:
+		if player has permission "Ntools.fly":
+			if {Ntools.%player%.fly} is false:
+				allow arg 1 to fly to 
+				set {Ntool.%player%.fly} to true
+				send "{@tag} &9Wlaczyles fly graczowi &c%arg 1%"
+				stop
+			if {Ntool.%player%.fly} is true:
+				disallow arg 1 to fly
+				set {Ntool.%player%.fly} to false
+				send "{@tag} &9Wylaczyles fly graczowi &c%arg 1%"
+				stop
+			if {Ntool.%player%.fly} is not set:
+				set {Ntool.%player%.fly} to false
+				send "{@tag} &9Wlaczono komende fly!"
+				stop
+			else:
+				send "{@tag} &9Podaj nick gracza"
+				stop
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.fly)"
+			stop
+command /unmute [<player>]:
+	trigger:
+		if player has permission "Ntools.unmute":
+			if arg 1 is set:
+				if {mute.%argument 1%} is true: 
+					set {mute.%argument 1%} to false
+					send "{@tag} &9Znow mozesz mowic" to argument 1
+					stop
+				else:
+					send "{@tag} &9Ten Gracz nie jest wyciszony!"
+					stop
+			else:
+				send "{@tag} &9Podaj gracza!"
+				stop
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.unmute)"
+			stop
+			
+# AntyGrifering #
+
+command /? [<text>]:
+	trigger:
+		execute command "/playsound random.door_open %name of player%"
+		send "&4Blad: &cnie masz uprawnienia."                                                            
+command /bukkit:w [<text>]:
+	trigger:
+		execute command "/playsound random.door_open %name of player%"
+		send "&4Blad: &cnie masz uprawnienia."                                                             
+command /bukkit:msg [<text>]:
+	trigger:
+		execute command "/playsound random.door_open %name of player%"
+		send "&4Blad: &cnie masz uprawnienia."
+command /bukkit:tell [<text>]:
+	trigger:
+		execute command "/playsound random.door_open %name of player%"
+		send "&4Blad: &cnie masz uprawnienia."                                                                                                                      
+command /bukkit:ver [<text>]:
+	trigger:
+		execute command "/playsound random.door_open %name of player%"
+		send "&4Blad: &cnie masz uprawnienia."
+command /bukkit:help [<text>]:
+	trigger:
+		execute command "/playsound random.door_open %name of player%"
+		send "&4Blad: &cnie masz uprawnienia."
+command /bukkit:about [<text>]:
+	trigger:
+		execute command "/playsound random.door_open %name of player%"
+		send "&4Blad: &cnie masz uprawnienia."                                                             
+command /bukkit:? [<text>]:
+	trigger:
+		execute command "/playsound random.door_open %name of player%"
+		send "&4Blad: &cnie masz uprawnienia."                                                          
+command /bukkit:plugins [<text>]:
+	trigger:
+		execute command "/playsound random.door_open %name of player%"
+		send "&4Blad: &cnie masz uprawnienia."
+command /bukkit:pl [<text>]:
+	trigger:
+		execute command "/playsound random.door_open %name of player%"
+		send "&4Blad: &cnie masz uprawnienia."
+command /plugins [<text>]:
+	trigger:
+		execute command "/playsound random.door_open %name of player%"
+		send "&fPlugins (&a1&f): &6%script%"
+command /pl [<text>]:
+	trigger:
+		execute command "/playsound random.door_open %name of player%"
+		send "&4Blad: &cnie masz uprawnienia."
+command /bukkit:me [<text>]:
+	trigger:
+		execute command "/playsound random.door_open %name of player%"
+		send "&4Blad: &cnie masz uprawnienia."
+		
+# AntyBoty #
+
+on connect:
+    if {gracz::%player%} is set:
+        stop
+    kick player due to "&6[ &cAntyBot &6] &7Aby zagrac wbij ponownie na serwer."
+    set {gracz::%player%} to now
+#Reload serwera#
+
+command /reload:
+	trigger:
+		send "{@tag} &cPrzeladowanie serwera za 5 sekund."
+		wait 5 second
+		make player execute command "sk reload all"
+		wait 10 second
+		send "{@tag} &9Pomyslnie przeladowano caly serwer"
+
+# command of kick players #
+
+command /kick [<player>] [<text>]:
+        trigger:
+                if arg 1 is set:
+                        if arg 2 is set:
+                                if player has permission "Ntools.kick":
+                                        if argument 1 has permission "essentialsskript.kick":
+                                                send "{@tag} &cNie mozesz wyrzucic tego gracza!"
+                                                stop
+                                        else:
+                                                kick the argument 1 due to "%arg 2%"
+                                                broadcast "{@tag} &9Gracz &c%arg 1% &9zostal wyrzucony za &c%arg 2%"
+                                                stop
+                                else:
+                                        send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.kick)}"
+                                        stop
+                        else:
+                                send "{@tag} &cPodaj powod!"
+                                stop
+                else:
+                        send "{@tag} &cPodaj nick gracza!"
+                        stop
+						
+# Heal and feed #
+
+command /heal [<player>]:
+        aliases: ulecz
+        trigger:
+                if arg 1 is not set:
+                        if player's health is not 10:
+                                if player has permission "Ntools.heal":
+                                        set the player's food level to 10
+                                        heal the player by 10 hearts
+                                        send "{@tag} &aUleczono!"
+                                        stop
+                                else:
+                                        send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.heal)"
+                                        stop
+                        else:
+                                send "{@tag} &cTwoje zycie jest pelne!"
+                                stop
+                if arg 1 is set:
+                        if argument's health is not 10:
+                                if player has permission "Ntools.heal":
+                                        set the argument's food level to 10
+                                        heal the argument by 10 hearts
+                                        send "{@tag} &bUleczono!" to arg 1
+                                        send "{@tag} &bUleczono gracza &c%arg 1%"
+                                        stop
+                                else:
+                                        send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.heal)"
+                                        stop
+                        else:
+                                send "{@tag} &cZycie tego gracza jest pelne!"
+                                stop
+ 
+                               
+command /feed [<player>]:
+        aliases: nakarm
+        trigger:
+                if arg 1 is not set:
+                        if player's food level is not 10:
+                                if player has permission "Ntools.feed":
+                                        set the player's food level to 10
+                                        send "{@tag} &bNakarmiono!"
+                                        stop
+                                else:
+                                        send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.feed)"
+                                        stop
+                        else:
+                                send "{@tag} &cTwoj glod jest pelny!"
+                                stop
+                if arg 1 is set:
+                        if argument's food level is not 10:
+                                if player has permission "Ntools.feed":
+                                        set the argument's food level to 10
+                                        send "{@tag} &bNakarmiono!" to arg 1
+                                        send "{@tag} &bNakarmiono gracza &c%arg 1%"
+                                        stop
+                                else:
+                                        send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.feed)"
+                                        stop
+                        else:
+                                send "{@tag} &cGlod tego gracza jest pelny!"
+                                stop
+                               
+# hat #
+ 
+command /hat <material>:
+        aliases: czapka
+        trigger:
+                if player has permission "Ntools.hat":
+                        if arg 1 is set:
+                                if id of argument 1 is greater than 255:
+                                        send "{@tag} &cNie mozesz zalozyc tego itemku tylko bloki!"
+                                        stop
+                                else:
+                                        if helmet slot of the player is not empty:
+                                                send "{@tag} &cNajpierw zdejmij przedmiot z glowy!"
+                                                stop
+                                        else:
+                                                set helmet of the player to argument
+                                                send "{@tag} &bCiesz sie nowym kapeluszem!"
+                                                stop
+                        else:
+                                send "{@tag} &cWybierz id bloku!"
+                                stop
+                else:
+                        send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.hat)"
+                        stop
+
+# Nie Dotykaj bo nie bd dzialac caly sk 0o0#
+
+on skript start:
+        send "&8Serwer pracuje na wersji: %skript version%" to the console
+        send "" to the console
+        send "&8--------------------------------------------------------------" to the console
+        send "&8|                                                            |" to the console
+        send "&8|                  Enable &9Ntools                         &8|" to the console
+        send "&8|                                                            |" to the console
+        send "&8--------------------------------------------------------------" to the console
+        send "" to the console
+        send "&8Autor: &aNaciukany" to the console
+        send "&8Version: &71" to the console
+        send "" to the console
+		
+# vanish #
+
+command /vanish [<text>]:
+	permission message: &4Blad: &cNie posiadasz uprawnienia &8(Ntools.vanish)
+	permission: Ntools.vanish"
+	trigger:
+		if {Vanish::%player%} is true:
+			send "{@tag}&f&lWylaczyles Niewidzialnosc."
+			reveal player to all players
+			set tag of player to "&f"
+			set {Vanish::%player%} to false
+		else:
+			set {Vanish::%player%} to true
+			send "{@tag} &f&lWlaczyles Niewidzialnosc."
+			loop all players:
+				if loop-player doesn't have permission "Ntools.vanish".see":
+					hide player for loop-player
+			set tag of player to "&4[NieWidacGo] &f"
+on join:
+	reveal player to all players
+	set {Vanish::%player%} to false
+	set tag of player to "&f"
+on join:
+	wait 1 tick
+	loop all players:
+		if loop-player has permission "Ntools.vanish":
+			reveal loop-player to player
+			
+# Drop #
+
+on mine of stone:
+        add 1 to {scoreboard::stone::%player%}
+        chance of {@diamenty}%:
+                give {@Mnoznik} diamond to player
+                add 1 to {scoreboard::diaxy::%player%}
+                send "{@tag} &7Gratulacje trafiles na: &b&lDiament! &7[ x{@Mnoznik} ]" 
+                               
+        chance of {@zloto}%:
+                give {@Mnoznik} gold ingot to player
+                add 1 to {scoreboard::zloto::%player%}
+                send "{@tag} &7Gratulacje trafiles na: &e&lZloto! &7[ x{@Mnoznik} ]" 
+   
+        chance of {@zelazo}%:
+                give {@Mnoznik} iron ingot to player
+                send "{@tag} &7Gratulacje trafiles na: &f&lZelazo! &7 [ x{@Mnoznik} ]" 
+   
+        chance of {@emerady}%:
+                give {@Mnoznik} emerald to player
+                send "{@tag} &7Gratulacje trafiles na: &a&lEmeralda ! &7[ x{@Mnoznik} ]" 
+         
+        chance of {@obsydian}%:
+                give {@Mnoznik} obsidian to player
+                send "{@tag} &7Gratulacje trafiles na: &1&lObsydian ! &7[ x{@Mnoznik} ]" 
+         
+        chance of {@wungiel}%:
+                give {@Mnoznik} coal to player
+                send "{@tag} &7Gratulacje trafiles na: &0&lWegiel ! &7[ x{@Mnoznik} ]" 
+           
+        chance of {@gunpowder}%:
+                give {@Mnoznik} gunpowder to player
+                send "{@tag} &7Gratulacje trafiles na: &8&lProszek ! &7[ x{@Mnoznik} ]" 
+         
+        chance of {@jablko}%:
+                give {@Mnoznik} apple to player
+                send "{@tag} &7Gratulacje trafiles na: &4&lJablko ! &7[ x{@Mnoznik} ]" 
+ 
+        chance of {@piasek}%:
+                give {@Mnoznik} sand to player
+                send "{@tag} &7Gratulacje trafiles na: &e&lPiasek ! &7[ x{@Mnoznik} ]" 
+     
+        chance of {@perelka}%:
+                give {@Mnoznik} ender pearl to player
+                send "{@tag} &7Gratulacje trafiles na: &c&lPerelke ! &7[ x{@Mnoznik} ]" 
+ 
+        chance of {@book}%:
+                give {@Mnoznik} Book to player
+                send "{@tag} &7Gratulacje trafiles na: &9&lKsiazke ! &7[ x{@Mnoznik} ]" 
+#
+command /drop:
+	trigger:
+		open chest with 4 rows named "&7Drop Uzytkownika: &6%player%" to player
+		wait 2 ticks
+		format slot 0 of player with 1 of diamond named "&e&lDiamenty" with lore "&7Procent &c{@diamenty}" to close
+		format slot 1 of player with 1 of gold ingot named "&e&lZloto" with lore "&7Procent &c{@zloto}" to close
+		format slot 2 of player with 1 of Iron Ingot named "&e&lZelazo" with lore "&7Procent &c{@zelazo}" to close
+		format slot 3 of player with 1 of emerald named "&e&lSzmaragdy" with lore "&7Procent &c{@emerady}" to close
+		format slot 4 of player with 1 of obsidian named "&e&lObsydian" with lore "&7Procent &c{@obsydian}" to close
+		format slot 5 of player with 1 of coal named "&e&lWegiel" with lore "&7Procent &c{@wungiel}" to close
+		format slot 6 of player with 1 of gunpowder named "&e&lProszek" with lore "&7Procent &c{@gunpowder}" to close
+		format slot 7 of player with 1 of apple named "&e&lJablko" with lore "&7Procent &c{@jablko}" to close
+		format slot 8 of player with 1 of sand named "&e&lPiasek" with lore "&7Procent &c{@piasek}" to close
+		format slot 9 of player with 1 of ender pearl named "&e&lPerly" with lore "&7Procent &c{@perelka}" to close
+		format slot 10 of player with 1 of Book named "&e&lKsiazki" with lore "&7Procent &c{@book}." to close
+		format slot 22 of player with {@Mnoznik} of Bedrock named "&c&l>> Drop x&4 {@Mnoznik}" with lore "&7Ilosc wypadanych itemow" to close
+		
+# Stoniarki#
+
+on script load:
+    register new shaped recipe for emerald ore named "&aMagiczna stoniarka" using stone, stone, stone, stone, emerald, stone, stone, stone, stone
+on place of emerald ore:
+    if name of the player's tool is "&aMagiczna stoniarka":
+        send "&7Postawiles: &aMagiczna stoniarke"
+        set {s.%event-block%} to true
+        wait 1 second
+        set event-block to stone
+        stop
+on break of stone:
+    if {s.%event-block%} is true:
+        if player is holding gold pickaxe:
+            cancel event
+            send "&7Zniszczyles: &aMagiczna stoniarke"
+            set event-block to air
+            if player can hold 1 emerald ore named "&aMagiczna stoniarka":
+                give 1 emerald ore named "&aMagiczna stoniarka" to the player
+                stop
+            else:
+                drop 1 emerald ore named "&aMagiczna stoniarka"
+                stop
+        else:
+            wait 1 second
+            set event-block to stone
+            stop
+
+# Sprawdzanie ip graczy oraz poczatki .yml#
+
+on script load:
+        if folder "plugins/Ntools/Beta" doesn't exists:
+                create folder "plugins/Ntools/Beta"
+        if file "plugins/Ntools/Beta/config.yml" doesn't exists:
+                create file "plugins/Ntools/Beta/config.yml"
+ 
+on first join:
+        set {ip:%player%} to player's ip
+        wf "'Adres xD: '%player%' '%{ip:%player%}%'" to "plugins/Ntools/Beta/config.yml"
+on join:
+        {ip:%player%} is not set:
+                set {ip:%player%} to player's ip
+                wf "Ntools (BETA): Gracz: %player% Jego Adress IP: %{ip:%player%}%'" to "plugins/Ntools/Beta/config.yml"
+
+# Ustawianie domu #
+
+command /sethome:
+	aliases: ustawdom
+	trigger:
+		if player has permission "Ntools.sethome":
+			set {Ntools.%player%.home} to location of player
+			send "{@tag} &bUstawiono home!"
+			stop
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.sethome)"
+			stop
+command /home:
+	aliases: dom
+	trigger:
+		if player has permission "Ntools.home":
+			if {Ntools.%player%.home} is set:
+				if {cooldown} is false:
+					teleport player to {Ntools.%player%.home}
+					send "{@tag} &aTeleportacja!"
+					stop
+				else:
+					set {_pos} to location of player
+					send "{@tag} &7Czekaj &65 sekund&7, nie wolno Ci sie ruszyc!"
+					if {_pos} isn't location of player:
+						send "{@tag} &cWykryto ruch, teleportacja anulowana!"
+						stop
+					wait 1 second
+					if {_pos} isn't location of player:
+						send "{@tag} &cWykryto ruch, teleportacja anulowana!"
+						stop
+					wait 1 second
+					if {_pos} isn't location of player:
+						send "{@tag} &cWykryto ruch, teleportacja anulowana!"
+						stop
+					wait 1 second
+					if {_pos} isn't location of player:
+						send "{@tag} &cWykryto ruch, teleportacja anulowana!"
+						stop
+					wait 1 second
+					if {_pos} isn't location of player:
+						send "{@tag} &cWykryto ruch, teleportacja anulowana!"
+						stop
+					wait 1 second
+					if {_pos} is location of player:
+						teleport player to {Ntools.%player%.home}
+						send "{@tag} &bTeleportacja..."
+						stop
+					else:
+						send "{@tag} &cWykryto ruch, teleportacja anulowana!"
+						stop
+			else:
+				send "{@tag} &cHome nie zostal ustawiony skontaktuj sie z administratorem!"
+				stop
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.home)"
+			stop
+command /delhome:
+	trigger:
+		if player has permission "Ntools.delhome":
+			if {Ntools.%player%.home} is set:
+				delete {Ntools.%player%.home}
+				send "{@tag} &bUsunieto home!"
+				stop
+			else:
+				send "{@tag} &cNie masz domu!"
+				stop
+		else:
+			display "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.delhome)" on bossbar with 100 percent by 1 seconds for player
+			stop
+# Anty skrypty.#
+
+on damage of player:
+	attacker is a player
+	victim is a player
+	set {_A::%attacker%} to location of attacker
+	set {_V::%victim%} to location of victim
+	if attacker's tool is bow:
+		stop
+	else:
+		if distance between {_A::%attacker%} and {_V::%victim%} is bigger than 4:
+			cancel event
+		else:
+			stop
+	
+# Automatyczne Wiadomoscy wysylane do gracza.#
+
+every 60 real seconds:
+    {auto.spam} is not set:
+        set {auto.spam} to 1
+        stop
+    {auto.spam} is 1:
+        broadcast "{@tag} &7&a&lDziekuje za uzywanie &6&LNtools! :D"
+        set {auto.spam} to 2
+        stop
+    {auto.spam} is 2:
+        broadcast "{@tag} Masz propozycje? Wbijaj na &bskype: &7kacper.dawid2"
+        set {auto.spam} to 3
+        stop
+    {auto.spam} is 3:
+        broadcast "{@tag} &7Wiadomosc przykladowa 1"
+        set {auto.spam} to 4
+        stop
+    {auto.spam} is 4:
+        broadcast "{@tag} &7Wiadomosc przykladowa 2"
+        set {auto.spam} to 5
+        stop
+    {auto.spam} is 5:
+        broadcast "{@tag} &7Wiadomosc przykladowa 3"
+        set {auto.spam} to 1
+        stop
+
+# Ntools - wysylanie pomocy dla gracza #
+
+command /Ntools:
+	aliases: naciukany , NaciukTools
+	trigger:
+		send "&7-------{@tag}&7-------"
+		send "&6/G &f-Komendy gildi."
+		send "&6/zapisz , /gzapisz &f- Zapis swiata oraz gildi."
+		send "&6/helpop &f- Wysyla wiadomosc do administracji."
+		send "&6/gm &c<1-2> &f- Ustawia Tryb gry ."
+		send "&6/msg &f- Prywatna wiadomosc do innego gracza."
+		send "&6/setspawn , /spawn &f- Komendy spawnu."
+		send "&6/chat on/off/clear &f- Komendy chatu."
+		send "&6/kick <gracz> <powod> &f- Wyrzucanie gracza z serwera."
+		send "&6/list &f- Lista graczy na serwerze."
+		send "&6/sun /rain &f- Zmiana pogody."
+		send "&6/tp /tpall &f- Komendy Teleportacji."
+		send "&6/afk &f- Oznajmiasz ze nie ma cie przy komputerze."
+		send "&6/fly &f- Komenda latania."
+		send "&6/mute /unmute &f- Wyciszanie i odciszanie gracza."
+		send "&6/heal &c<grazcz> &6/feed &c<gracz> &f- Karmienie oraz leczenie."
+		send "&6/hat &c<blok> &f- Zakladasz blok na glowe."
+		send "&6/vanish &f- stajesz sie niewidzialny."
+		send "&6/drop &f- Sprawdzasz drop."
+		send "&6/home /sethome /delhome &f- Komendy domu."
+		send "&6/repair &fNaprawa przedmiotow."
+		send "&6/head &f- Otrzymujesz glowe gracza."
+		send "&6/god &f- Jestes niesmiertelny."
+		send "&6/czas &f- Ustawiasz dzien lub noc."
+		send "&6/broadcast &f- Wiadomosc Publiczna do kazdego gracza."
+		send "&6/tps &f- liczba tps serwera."
+		send "&6/speed &f- Ustawiasz szybkosc"
+		send "&6/warp ,/delwarp ,/setwarp &f- warpy."
+		send "&6/strzelaj &f- strzelasz mobami."
+		
+		
+# CODE OF GUILDS #
+options:
+	guild.reqitems: 5 diamond, 1 emerald and 5 stone 
+	guild.vip.reqitems: 2 diamond and 2 stone
+	guild.item: dragon egg
+	guild.aliases: g, guild
+	guild.guildradius: 150
+	guild.spawnradius: 20
+	guild.dolaczitem: 5 diamond
+	guild.chat: &8[&f{RANK}&8] {TAG} &7{NICK}&8: &f{MSG}
+	guild.tagformat: &8[&2%{_tag}%&8]&f
+	teleport.time: 10 
+	teleport.type: seconds
+	powieksz.item.1: 10 diamond
+	powieksz.item.2: 20 diamond
+	powieksz.item.3: 30 diamond
+	powieksz.item.4: 40 diamond
+	powieksz.item.5: 50 diamond
+	chat.format.lider: &2[&a{TAG}&2]&a&l [**] &7{NICK}&8: &f{MSG}
+	chat.format.normal: &6[&e{TAG}&6]&e&l [*] &7{NICK}&8: &f{MSG}
+	sojusz.enabled: true
+	potion.shop.waterbreath: 10 emeralds
+	potion.shop.fireresistance: 35 emeralds
+	potion.shop.invisible: 150 emeralds
+	potion.shop.strength: 100 emeralds
+	potion.shop.speed: 50 emeralds
+	potion.shop.regeneration: 35 emeralds
+	potion.shop.nightvision: 15 emeralds
+	tab: true
+
+# ====================== KOMENDY ===========================
+
+
+command /skGuilds:gildia [<text>] [<text>] [<text>] [<text>]:
+	aliases: {@guild.aliases}
+	trigger:
+		if arg 1 is "zaloz" or "create" or "z" or "c":
+			if arg 2 is not set:
+				send "{@tag} &cWpisz tag gildii."
+				stop
+			if arg 3 is not set:
+				send "{@tag} &cWpisz nazwe gildii."
+				stop
+			if {skGuilds::inGuild::%player%} is set:
+				send "{@tag} &cJestes juz w gildii!"
+				stop
+			if {skGuilds::Lider::%{skGuilds::inGuild::%player%}%} is set:
+				send "{@tag} &cJestes liderem innej gildii, usun ja aby stworzyc wlasna!"
+				stop
+			if length of arg 2 is less than 3:
+				send "{@tag} &cTag musi miec minimum 3 liter!"
+				stop
+			if length of arg 2 is greater than 5:
+				send "{@tag} &cTag musi miec maximum 5 liter!"
+				stop
+			if length of arg 3 is greater than 25:
+				send "{@tag} &cNazwa nie moze byc dluzsza niz 25 liter!"
+				stop
+			if length of arg 3 is less than 10:
+				send "{@tag} &cNazwa nie moze byc krotsza niz 10 liter!"
+				stop
+			if {skGuilds::GildiaTag::%arg 2%} is set:
+				send "{@tag} &cGildia o takim tagu juz istnieje!"
+				stop
+			if {skGuilds::GildiaNazwa::%arg 3%} is set:
+				send "{@tag} &cGildia o takiej nazwie juz istnieje!"
+			if distance between player and {skGuilds::Spawn} is more than 150:
+				if player has permission "skguilds.vip":
+					if player doesn't have {@guild.vip.reqitems}:
+						send "{@tag} &cNie masz wymaganych itemow na gildie. &6(VIP)"
+						send "{@tag} &cPotrzebujesz: &6{@guild.vip.reqitems}"
+					else: 
+						display hologram "&6Gildia &e%arg 3% [%arg 2%]" at location of player for 100 seconds
+						remove {@guild.vip.reqitems} from the player
+						set {skGuilds::inGuild::%player%} to arg 2
+						set {skGuilds::GildiaTag::%arg 2%} to true
+						set {skGuilds::GildiaNazwa::%arg 3%} to true
+						set {skGuilds::NazwaGildii::%arg 2%} to arg 3
+						set {skGuilds::TagGildii::%arg 2%} to arg 2
+						set {skGuilds::Zycia::%arg 2%} to 3
+						add arg 3 to {skGuilds::Gildie::*}
+						add arg 2 to {skGuilds::Tagi::*}
+						set {skGuilds::PVP::%arg 2%} to false
+						set {skGuilds::%arg 2%::Powieksz::LVL::1} to true
+						set {skGuilds::%arg 2%::Powieksz::LVL::2} to true
+						set {skGuilds::%arg 2%::Powieksz::LVL::3} to false
+						add player to {skGuilds::Czlonkowie::%arg 2%::*}
+						set {skGuilds::%arg 2%::Powieksz::LVL::4} to false
+						set {skGuilds::%arg 2%::Powieksz::LVL::5} to false
+						set {skGuilds::Opis::%arg 2%} to "&eNowa gildia!"
+						set {skGuilds::Lider::%arg 2%} to "%player%"
+						set {skGuilds::Zabojstwa::%arg 2%} to 0
+						set {skGuilds::GuildPoints::%arg 2%} to 1000
+						set {_Center} to block at location (x-coordinate of player, y-coordinate of player, z-coordinate of player) in "world"
+						set {skGuilds::Baza::%arg 2%} to {_Center}
+						set {skGuilds::Polozenie::%arg 2%} to {_Center}
+						set block at {_Center} to {@guild.item}
+						set {_Gildia} to arg 2
+						add {_Gildia} to {skGuilds::Cuboids::*}
+						set {skGuilds::Cuboid::Large::%{_Gildia}%} to 70
+						set {skGuilds::Cuboid::Center::%{_Gildia}%} to {_Center}
+						"%{_Gildia}%".Region.selectLS{{skGuilds::Cuboid::Center::%{_Gildia}%}, {skGuilds::Cuboid::Large::%{_Gildia}%}};
+						set {skGuilds::DataZalozenia::%arg 2%} to now
+						edit tag of player to "&e[&6%arg 2%&e] &e"
+						broadcast "{@tag} Gildia &e%arg 3% &8[&e%arg 2%&8] &7zostala zalozona przez &6[VIP] &e%player%"
+						send "{@tag} &6Z racji tego ze jestes VIPem, otrzymujesz na start cuboid o wielkosci 70x70 kratek! Oczywiscie w dalszym stopniu mozesz go powiekszac!"
+						stop
+				else:
+					if player doesn't have {@guild.reqitems}:
+						send "{@tag} &cNie masz wymaganych itemow na gildie."
+						send "{@tag} &cPotrzebujesz: &7{@guild.reqitems}"
+					else: 
+						remove {@guild.reqitems} from the player
+						set {skGuilds::inGuild::%player%} to arg 2
+						set {skGuilds::GildiaTag::%arg 2%} to true
+						set {skGuilds::GildiaNazwa::%arg 3%} to true
+						set {skGuilds::NazwaGildii::%arg 2%} to arg 3
+						set {skGuilds::TagGildii::%arg 2%} to arg 2
+						set {skGuilds::Zycia::%arg 2%} to 3
+						add arg 3 to {skGuilds::Gildie::*}
+						add arg 2 to {skGuilds::Tagi::*}
+						set {skGuilds::PVP::%arg 2%} to false
+						set {skGuilds::%arg 2%::Powieksz::LVL::1} to false
+						set {skGuilds::%arg 2%::Powieksz::LVL::2} to false
+						set {skGuilds::%arg 2%::Powieksz::LVL::3} to false
+						add player to {skGuilds::Czlonkowie::%arg 2%::*}
+						set {skGuilds::%arg 2%::Powieksz::LVL::4} to false
+						set {skGuilds::%arg 2%::Powieksz::LVL::5} to false
+						set {skGuilds::Opis::%arg 2%} to "&eNowa gildia!"
+						set {skGuilds::Lider::%arg 2%} to "%player%"
+						set {skGuilds::Zabojstwa::%arg 2%} to 0
+						set {skGuilds::GuildPoints::%arg 2%} to 1000
+						set {_Center} to block at location (x-coordinate of player, y-coordinate of player, z-coordinate of player) in "world"
+						set {skGuilds::Baza::%arg 2%} to {_Center}
+						set {skGuilds::Polozenie::%arg 2%} to {_Center}
+						set block at {_Center} to {@guild.item}
+						set {_Gildia} to arg 2
+						add {_Gildia} to {skGuilds::Cuboids::*}
+						set {skGuilds::Cuboid::Large::%{_Gildia}%} to 50
+						set {skGuilds::Cuboid::Center::%{_Gildia}%} to {_Center}
+						"%{_Gildia}%".Region.selectLS{{skGuilds::Cuboid::Center::%{_Gildia}%}, {skGuilds::Cuboid::Large::%{_Gildia}%}};
+						set {skGuilds::DataZalozenia::%arg 2%} to now
+						edit tag of player to "&e[&6%arg 2%&e] &e"
+						broadcast "{@tag} Gildia &e%arg 3% &8[&e%arg 2%&8] &7zostala zalozona przez &e%player%"
+						stop
+			else:
+				send "{@tag} &cJestes za blisko spawnu!"
+		if arg 1 is "info" or "informacje" or "i":
+			if arg 2 is not set:
+				if {skGuilds::inGuild::%player%} is set:
+					run player command "/g info %{skGuilds::inGuild::%player%}%" as op
+					stop
+				else:
+					send "{@tag} &cWpisz /g info <TAG>!"
+					stop
+			else if {skGuilds::GildiaTag::%arg 2%} is not set:
+				if arg 2 is set:
+					send "{@tag} &cGildia o tagu %arg 2% nie istnieje!"
+			else:
+				if arg 2 is not set:
+					set {_g} to {skGuilds::inGuild::%player%}
+					open chest with 1 rows named "&cInformacje o gildii &4%{_g}%" to player
+				if arg 2 is set:
+					open chest with 1 rows named "&cInformacje o gildii &4%arg 2%" to player
+					format slot 8 of player with 1 of glowstone dust named "&6Zycia" with lore "&e%{skGuilds::Zycia::%arg 2%}%" to be unstealable
+					format slot 0 of player with 1 of glowstone dust named "&6Opis gildii" with lore "&e%{skGuilds::Opis::%arg 2%}%" to be unstealable
+					format slot 1 of player with 1 of glowstone dust named "&6Data zalozenia" with lore "&e%{skGuilds::DataZalozenia::%arg 2%}%" to be unstealable
+					format slot 2 of player with 1 of glowstone dust named "&6Ranking" with lore "&e%{skGuilds::GuildPoints::%arg 2%}%" to be unstealable
+					format slot 3 of player with 1 of glowstone dust named "&6Wielkosc terenu" with lore "&e%{skGuilds::Cuboid::Large::%arg 2%}%" to be unstealable
+					if {skGuilds::Sojusz::%arg 2%::*} is set:
+						format slot 4 of player with 1 of glowstone dust named "&6Sojusze" with lore "&e%{skGuilds::Sojusz::%arg 2%::*}%" to be unstealable
+					else:
+						format slot 4 of player with 1 of gunpowder named "&4Sojusze" with lore "&cBrak!" to be unstealable
+					if {skGuilds::PVP::%arg 2%} is false:
+						format slot 5 of player with 1 of gunpowder named "&4PVP" with lore "&cWylaczone!" to be unstealable
+					else:
+						format slot 5 of player with 1 of glowstone dust named "&6PVP" with lore "&aWlaczone!" to be unstealable
+					if {skGuilds::Lider::%arg 2%} parsed as player is online:
+						format slot 6 of player with 1 of glowstone dust named "&6Lider" with lore "&a%{skGuilds::Lider::%arg 2%}%" to be unstealable
+					else:
+						format slot 6 of player with 1 of gunpowder named "&4PVP" with lore "&c%{skGuilds::Lider::%arg 2%}%" to be unstealable
+					set {_} to size of {skGuilds::Czlonkowie::%arg 2%::*}
+					if {_} is 0:
+						format slot 7 of player with 1 of gunpowder named "&4Czlonkowie" with lore "&cBrak!" to be unstealable
+					else:
+						format slot 7 of player with 1 of glowstone dust named "&6Czlonkowie" with lore "&e%{skGuilds::Czlonkowie::%arg 2%::*}%" to be unstealable
+						stop
+					stop
+		if arg 1 is "lista" or "l" or "list":
+			if arg 2 is set:
+				send "{@tag} &cZa duzo argumentow!"
+				stop
+			if arg 3 is set:
+				send "{@tag} &cZa duzo argumentow!"
+				stop
+			if {skGuilds::Tagi::*} is not set:
+				send "{@tag} &cNa tym serwerze nie ma zadnych gildii!"
+				stop
+			set {_List::*} to "%{skGuilds::Tagi::*}%"
+			set {_num} to 0
+			open chest with 6 rows named "&cLista gildii:" to player
+			loop {_List::*}:
+				format slot {_num} of player with 1 of lapis block named "&e%loop-value%" with lore "&6%{skGuilds::NazwaGildii::%loop-value%}%" to run "xxtajne %loop-value%"
+				add 1 to {_num}
+				if size of {_List::*} is 0:
+					send "{@tag} &cNie ma zadnych aktywnych gildii!"
+					stop
+			while inventory name of current inventory of player is "&cLista gildii:":
+				if size of {_List::*} is not 0:
+					loop 53 times:
+						set {_} to loop-number
+						unformat slot {_}-1 of player
+						set {_num} to 0
+						loop {_List::*}:
+							format slot {_num} of player with 1 of lapis block named "&e%loop-value%" with lore "&6%{skGuilds::NazwaGildii::%loop-value%}%" to run "xxtajne %loop-value%"
+							add 1 to {_num}
+						wait 1 second
+
+		if arg 1 is "baza" or "dom" or "base" or "b" or "d":
+			if arg 2 is set:
+				send "{@tag} &cZa duzo argumentow!"
+				stop
+			if arg 3 is set:
+				send "{@tag} &cZa duzo argumentow!"
+				stop
+			else if {skGuilds::inGuild::%player%} is not set:
+				send "{@tag} &cNie jestes w zadnej gildii!"
+				stop
+			if {skGuilds::TPCooldown::%player%} is false:
+				set {_pos} to location of player
+				set {_index} to {@teleport.time}
+				send "{@tag} Zaczekaj &e{@teleport.time} {@teleport.type}&7!"
+				set {skGuilds::TPCooldown::%player%} to true
+				loop {@teleport.time} times:
+					if {_pos} isn't location of player:
+						send "{@tag} &cTeleportacja anulowana..."
+						stop
+					send "&8> &e%{_index}%"
+					wait 1 {@teleport.type}
+					remove 1 from {_index}
+				if {_pos} is location of player:
+					set {_g} to {skGuilds::inGuild::%player%}
+					teleport player to {skGuilds::Baza::%{_g}%}		
+					send "{@tag} Teleportacja..."
+					show mob spawner flames at the player
+					set {skGuilds::TPCooldown::%player%} to false
+					stop
+				else:
+					send "{@tag} &cTeleportacja anulowana..."
+					set {skGuilds::TPCooldown::%player%} to false
+					stop	
+			else:
+				send "{@tag} &cJuz sie teleportujesz!"
+				stop
+		if arg 1 is "ustawbaze" or "setbase" or "sethome" or "sh" or "sb" or "ub":
+			if arg 2 is set:
+				send "{@tag} &cZa duzo argumentow!"
+				stop
+			if arg 3 is set:
+				send "{@tag} &cZa duzo argumentow!"
+				stop
+			else if {skGuilds::inGuild::%player%} is not set:
+				send "{@tag} &cNie jestes w zadnej gildii!"
+				stop
+			else if {skGuilds::Lider::%{skGuilds::inGuild::%player%}%} is not player:
+				send "{@tag} &cNie jestes liderem gildii!"
+			set {_rg} to Region.getAt{location of player};
+			if {_rg} is {skGuilds::inGuild::%player%}:
+				set {_Polozenie} to location of player
+				set {_Gildia} to {skGuilds::inGuild::%player%}
+				set {skGuilds::Baza::%{_Gildia}%} to {_Polozenie}
+				send "{@tag} Nowa baza gildii zostala ustawiona!"
+				stop
+			else:
+				send "{@tag} &cNie jestes na terenie swojej gildii!"
+				stop
+		if arg 1 is "usun" or "remove" or "delete" or "u" or "r" or "d" or "del" or "rem" or "rozwiaz":
+			if arg 2 is set:
+				send "{@tag} &cZa duzo argumentow!"
+				stop
+			if arg 3 is set:
+				send "{@tag} &cZa duzo argumentow!"
+				stop
+			if {skGuilds::inGuild::%player%} is not set:
+				send "{@tag} &cNie jestes w zadnej gildii!"
+				stop
+			if {skGuilds::Lider::%{skGuilds::inGuild::%player%}%} is not player:
+				send "{@tag} &cJedynie Lider moze usunac gildie!"
+				stop
+			set {_arg2} to {skGuilds::inGuild::%player%}
+			set {_arg3} to {skGuilds::NazwaGildii::%{_arg2}%}
+			edit tag of player to ""
+			delete {skGuilds::GildiaTag::%{_arg2}%}
+			delete {skGuilds::GildiaNazwa::%{_arg3}%} 
+			delete {skGuilds::TagGildii::%{_arg2}%} 
+			clear {skGuilds::inGuild::%player%}
+			remove {_arg3} from {skGuilds::Gildie::*}
+			remove {_arg2} from {skGuilds::Tagi::*}
+			delete {skGuilds::Czlonkowie::%{_arg2}%::*}
+			delete {skGuilds::PVP::%{_arg2}%}
+			delete {skGuilds::%{_arg2}%::Powieksz::LVL::1}
+			delete {skGuilds::%{_arg2}%::Powieksz::LVL::2}
+			delete {skGuilds::%{_arg2}%::Powieksz::LVL::3}
+			delete {skGuilds::%{_arg2}%::Powieksz::LVL::4}
+			delete {skGuilds::%{_arg2}%::Powieksz::LVL::5}
+			delete {skGuilds::Opis::%{_arg2}%}
+			delete {skGuilds::Lider::%{_arg2}%}
+			set {skGuilds::GuildPoints::%{_arg2}%} to "Brak!"
+			delete {skGuilds::Baza::%{_arg2}%}
+			delete {skGuilds::Polozenie::%{_arg2}%} 
+			delete {skGuilds::PodbiteGildie::%{_arg2}%} 
+			delete {skGuilds::Podbicia::%{_arg2}%} 
+			delete {skGuilds::Zabojstwa::%{_arg2}%}
+			delete {skGuilds::Zycia::%{_arg2}%}
+			set {_Gildia} to {_arg2}
+			remove {_Gildia} from {skGuilds::Cuboids::*}
+			delete {skGuilds::Cuboid::Large::%{_Gildia}%}
+			set block at {skGuilds::Cuboid::Center::%{_Gildia}%} to air
+			delete {skGuilds::Cuboid::Center::%{_Gildia}%} 
+			delete {skGuilds::DataZalozenia::%{_Gildia}%}
+			"%{_arg2}%".Region.delete{};
+			broadcast "{@tag} Gildia &e%{_arg3}% &8[&e%{_arg2}%&8] &7zostala rozwiazana przez &e%player%"
+			stop
+		if arg 1 is "opis" or "desc":
+			if arg 2 is set:
+				if length of arg 2 is greater than 70:
+					send "{@tag} &cDlugosc opisu nie moze byc wieksza niz 70 liter!"
+					stop
+				if {skGuilds::Lider::%{skGuilds::inGuild::%player%}%} is not player:
+					send "{@tag} &cMusisz byc liderem gildii by zmieniac opis!"
+					stop
+				if arg 3 is set:
+					send "{@tag} Nie mozesz podac wiecej niz &e1 argument&7,"
+					send "{@tag} ale za to mozesz wpisac &e_ &7poniewaz ten znak"
+					send "{@tag} zamieni sie w &espacje&7!"
+					stop
+				else:
+					set {_opis} to "%coloured arg 2%"
+					replace all "_" with " " in {_opis}
+					set {skGuilds::Opis::%{skGuilds::inGuild::%player%}%} to {_opis}
+					send "{@tag} Poprawnie zmieniles opis gildii na: &e%{_opis}%"
+		arg 1 is "pvp" or "pv":
+			arg 2 is set:
+				send "{@tag} &cZa duzo argumentow!"
+				stop
+			if {skGuilds::inGuild::%player%} is not set:	
+				send "{@tag} &cNie jestes w zadnej gildii!"
+				stop
+			if {skGuilds::Lider::%{skGuilds::inGuild::%player%}%} is not set:
+				send "{@tag} &cNie jestes liderem gildii!"
+				stop
+			if {skGuilds::PVP::%{skGuilds::inGuild::%player%}%} is true:
+				send "{@tag} Ogien sojuszniczy gildii zostal &cwylaczony!"
+				set {skGuilds::PVP::%{skGuilds::inGuild::%player%}%} to false
+				stop
+			else:
+				send "{@tag} Ogien sojuszniczy gildii zostal &awlaczony!"
+				set {skGuilds::PVP::%{skGuilds::inGuild::%player%}%} to true
+				stop
+		if arg 1 is "zapros" or "invite" or "inv":
+			arg 2 is not set:
+				send "{@tag} &cWpisz nick gracza!"
+				stop
+			if {skGuilds::inGuild::%player%} is not set:
+				send "{@tag} &cNie jestes w zadnej gildii!"
+				stop
+			set {_player} to arg 2 parsed as player
+			if {skGuilds::Lider::%{skGuilds::inGuild::%player%}%} is not player:
+				send "{@tag} &cJedynie lider moze zapraszac graczy!"
+				stop
+			if "%{skGuilds::inGuild::%player%}%" is "%{skGuilds::inGuild::%{_player}%}%":
+				send "{@tag} &cTen gracz juz jest w naszej gildii!"
+				stop
+			if arg 2 is "%player%":
+				send "{@tag} &cNie mozesz zaprosic samego siebie!"
+				stop
+			set {_g} to {skGuilds::inGuild::%player%}
+			set {skGuilds::Zaproszenie::%{_player}%::%{skGuilds::inGuild::%player%}%} to true
+			send "{@tag} &eZostales zaproszony do gildii &6%{_g}%&e!" to {_player}
+			send "{@tag} &eDolacz, za pomoca komendy &6/g dolacz %{_g}%&e!" to {_player}
+			send "{@tag} &eKoszt: &6{@guild.dolaczitem}" to {_player}
+			send "{@tag} Wyslano zaproszenie do gracza &e%{_player}%&7!"
+			wait 1 minute
+			if {skGuilds::inGuild::%{_player}%} is not {skGuilds::inGuild::%player%}:
+				set {skGuilds::Zaproszenie::%player%::%{skGuilds::inGuild::%player%}%} to false
+			stop
+		if arg 1 is "dolacz" or "join":
+			if player doesn't have {@guild.dolaczitem}:
+				send "{@tag} &cNie masz wymaganych przedmiotow!"
+				send "{@tag} &cPotrzebujesz: &7{@guild.dolaczitem}"
+				stop
+			if {skGuilds::inGuild::%player%} is set:
+				send "{@tag} &cJestes juz w gildii!"
+				stop
+			if arg 2 is not set:
+				send "{@tag} &cPodaj nazwe gildii!"
+				stop
+
+			if {skGuilds::GildiaTag::%arg 2%} is true:
+				if {skGuilds::Zaproszenie::%player%::%arg 2%} is true:
+					set {skGuilds::inGuild::%player%} to "%arg 2%"
+					add "%player%" to {skGuilds::Czlonkowie::%arg 2%::*}
+					edit tag of the player to "&6[&e%arg 2%&6] &e"
+					set {skGuilds::Zaproszenie::%player%::%arg 2%} to false
+					broadcast "{@tag} Gracz &e%player% &7dolaczyl do gildii &e%arg 2%"
+					remove {@guild.dolaczitem} from player
+					stop
+				else:
+					send "{@tag} &cNie jestes zaproszony do tej gildii!"
+			else:
+				send "{@tag} &cTaka gildia nie istnieje!"
+		if arg 1 is "opusc" or "leave":
+			if arg 3 is set:
+				send "{@tag} &cZa duzo argumentow!"
+				stop
+			if {skGuilds::inGuild::%player%} is not set:
+				send "{@tag} &cNie jestes w zadnej gildii!"
+				stop
+			if {skGuilds::Lider::%{skGuilds::inGuild::%player%}%} is player:
+				send "{@tag} &cLider nie moze opuscic gildii!"
+				stop
+			else:
+				broadcast "{@tag} Gracz &e%player% &7opuscil gildie &e%{skGuilds::inGuild::%player%}%"
+				remove "%player%" from {skGuilds::Czlonkowie::%{skGuilds::inGuild::%player%}%::*}
+				edit tag of player to ""
+				clear {skGuilds::inGuild::%player%}
+				stop
+		if arg 1 is "wyrzuc" or "kick":
+			if arg 2 is not set:
+				send "{@tag} &cWpisz nick gracza!"
+				stop
+			if {skGuilds::inGuild::%player%} is not set:
+				send "{@tag} &cNie jestes w zadnej gildii!"
+				stop
+			if {skGuilds::Lider::%{skGuilds::inGuild::%player%}%} is not player:
+				send "{@tag} &cTylko lider gildii moze wyrzucac graczy!"
+				stop
+			if arg 2 is player:
+				send "{@tag} &cNie mozesz wyrzucic siebie z gildii!"
+				stop
+			if "%{skGuilds::inGuild::%player%}%" is not "%{skGuilds::inGuild::%arg 2%}%":
+				send "{@tag} &cGracz &4%arg 2% &cnie jest w twojej gildii!"
+				stop
+			else:
+				broadcast "{@tag} Gracz &e%arg 2% &7zostal wyrzucony z gildii &e%{skGuilds::inGuild::%player%}%"
+				edit tag of arg 2 parsed as player to ""
+				remove "%arg 2%" from {skGuilds::Czlonkowie::%{skGuilds::inGuild::%player%}%::*}
+				clear {skGuilds::inGuild::%arg 2%}
+				stop
+		if arg 1 is "powieksz" or "bigger":
+			arg 2 is set:
+				send "{@tag} &cZa duzo argumentow!"
+				stop
+			arg 3 is set:
+				send "{@tag} &cZa duzo argumentow!"
+				stop
+			if {skGuilds::inGuild::%player%} is not set:
+				send "{@tag} &cNie jestes w zadnej gildii!"
+				stop
+			if {skGuilds::Lider::%{skGuilds::inGuild::%player%}%} is not player:
+				send "{@tag} &cTylko lider gildii moze powiekszac teren!"
+				stop
+			set {_gildia} to {skGuilds::inGuild::%player%}
+			set {_name} to {skGuilds::inGuild::%player%}
+			set {_rg} to Region.getAt{location of player};
+			if {_rg} is {skGuilds::inGuild::%player%}:
+				if {skGuilds::%{_gildia}%::Powieksz::LVL::1} is false:
+					if player doesn't have {@powieksz.item.1}:
+						send "{@tag} &cNie masz wymaganych przedmiotow!"
+						send "{@tag} &cPotrzebujesz: &7{@powieksz.item.1}"
+						stop 
+					remove {@powieksz.item.1} from player
+					set {skGuilds::Cuboid::Large::%{_Gildia}%} to 60
+					"%{_name}%".Region.selectLS{{skGuilds::Cuboid::Center::%{_Gildia}%} , {skGuilds::Cuboid::Large::%{_Gildia}%} }; 
+					set {skGuilds::%{_gildia}%::Powieksz::LVL::1} to true
+					set {skGuilds::%{_gildia}%::Powieksz::LVL::2} to false
+					send "{@tag} &eTeren gildii zostal powiekszony!"
+					send "{@tag} &eObecna wielkosc: &660 kratek"
+					send "{@tag} &ePoziom: &61"
+					stop
+				if {skGuilds::%{_gildia}%::Powieksz::LVL::2} is false:
+					if player doesn't have {@powieksz.item.2}:
+						send "{@tag} &cNie masz wymaganych przedmiotow!"
+						send "{@tag} &cPotrzebujesz: &7{@powieksz.item.2}"
+						stop 
+					remove {@powieksz.item.2} from player
+					set {skGuilds::Cuboid::Large::%{_Gildia}%} to 70
+					"%{_name}%".Region.selectLS{{skGuilds::Cuboid::Center::%{_Gildia}%} , {skGuilds::Cuboid::Large::%{_Gildia}%} }; 
+					set {skGuilds::%{_gildia}%::Powieksz::LVL::2} to true
+					set {skGuilds::%{_gildia}%::Powieksz::LVL::3} to false
+					send "{@tag} &eTeren gildii zostal powiekszony!"
+					send "{@tag} &eObecna wielkosc: &670 kratek"
+					send "{@tag} &ePoziom: &62"
+					stop
+				if {skGuilds::%{_gildia}%::Powieksz::LVL::3} is false:
+					if player doesn't have {@powieksz.item.3}:
+						send "{@tag} &cNie masz wymaganych przedmiotow!"
+						send "{@tag} &cPotrzebujesz: &7{@powieksz.item.3}"
+						stop 
+					remove {@powieksz.item.3} from player
+					set {skGuilds::Cuboid::Large::%{_Gildia}%} to 80
+					"%{_name}%".Region.selectLS{{skGuilds::Cuboid::Center::%{_Gildia}%} , {skGuilds::Cuboid::Large::%{_Gildia}%} }; 
+					set {skGuilds::%{_gildia}%::Powieksz::LVL::3} to true
+					set {skGuilds::%{_gildia}%::Powieksz::LVL::4} to false
+					send "{@tag} &eTeren gildii zostal powiekszony!"
+					send "{@tag} &eObecna wielkosc: &680 kratek"
+					send "{@tag} &ePoziom: &63"
+					stop
+				if {skGuilds::%{_gildia}%::Powieksz::LVL::4} is false:
+					if player doesn't have {@powieksz.item.4}:
+						send "{@tag} &cNie masz wymaganych przedmiotow!"
+						send "{@tag} &cPotrzebujesz: &7{@powieksz.item.4}"
+						stop 
+					remove {@powieksz.item.4} from player
+					set {skGuilds::Cuboid::Large::%{_Gildia}%} to 90
+					"%{_name}%".Region.selectLS{{skGuilds::Cuboid::Center::%{_Gildia}%} , {skGuilds::Cuboid::Large::%{_Gildia}%} }; 
+					set {skGuilds::%{_gildia}%::Powieksz::LVL::4} to true
+					set {skGuilds::%{_gildia}%::Powieksz::LVL::5} to false
+					send "{@tag} &eTeren gildii zostal powiekszony!"
+					send "{@tag} &eObecna wielkosc: &690 kratek"
+					send "{@tag} &ePoziom: &64"
+					stop
+				if {skGuilds::%{_gildia}%::Powieksz::LVL::5} is false:
+					if player doesn't have {@powieksz.item.5}:
+						send "{@tag} &cNie masz wymaganych przedmiotow!"
+						send "{@tag} &cPotrzebujesz: &7{@powieksz.item.5}"
+						stop 
+					remove {@powieksz.item.5} from player
+					set {skGuilds::Cuboid::Large::%{_Gildia}%} to 100
+					"%{_name}%".Region.selectLS{{skGuilds::Cuboid::Center::%{_Gildia}%} , {skGuilds::Cuboid::Large::%{_Gildia}%} }; 
+					set {skGuilds::%{_gildia}%::Powieksz::LVL::5} to true
+					send "{@tag} &eTeren gildii zostal powiekszony!"
+					send "{@tag} &eObecna wielkosc: &6100 kratek"
+					send "{@tag} &ePoziom: &65 (Ostatni)"
+					stop
+				else:
+					send "{@tag} &cOsiagnales maksymalny rozmiar terenu! (p.5) (100 kratek)"
+			else:
+				send "{@tag} &cMusisz znajdowac sie na terenie gildii by to zrobic!"
+				stop
+		if arg 1 is "ranking" or "rank":
+			if arg 2 is not set:
+				send "&8╔═══════ &6%player% &8════════╗"
+				send "&8╠&6 Ranking: &e%{skGuilds::Ranking::%player%}%"
+				send "&8╠&6 Zabojstwa: &e%{skGuilds::Zabojstwa::%player%}%"
+				send "&8╠&6 Zgony: &e%{skGuilds::Zgony::%player%}%"
+				if {skGuilds::inGuild::%player%} is not set:
+					send "&8╠&6 Gildia: &cBrak!"
+					send "&8╠&6 Ostatnie wejscie: &e%{skGuilds::LastJoin::%player%}%"
+				else:
+					send "&8╠&6 Gildia: &e%{skGuilds::inGuild::%player%}%"
+					send "&8╠&6 Ostatnie wejscie: &e%{skGuilds::LastJoin::%player%}%"
+				send "&8╚════════════════════╝"
+				stop
+			if arg 2 is set:
+				if arg 2 parsed as player is online:
+					send "&8╔═══════ &6%arg 2% &8════════╗"
+					send "&8╠&6 Ranking: &e%{skGuilds::Ranking::%arg 2%}%"
+					send "&8╠&6 Zabojstwa: &e%{skGuilds::Zabojstwa::%arg 2%}%"
+					send "&8╠&6 Zgony: &e%{skGuilds::Zgony::%arg 2%}%"
+					if {skGuilds::inGuild::%arg 2%} is not set:
+						send "&8╠&6 Gildia: &cBrak!"
+						send "&8╠&6 Ostatnie wejscie: &e%{skGuilds::LastJoin::%arg 2%}%"
+					else:
+						send "&8╠&6 Gildia: &e%{skGuilds::inGuild::%arg 2%}%"
+						send "&8╠&6 Ostatnie wejscie: &e%{skGuilds::LastJoin::%arg 2%}%"
+					send "&8╚════════════════════╝"
+					stop	
+				else:
+					send "{@tag} &cTen gracz nie jest na serwerze!"
+					stop
+		if arg 1 is "war" or "wojna" or "bitwa":
+			if arg 2 is not set:
+				send "{@tag} &cPodaj z jaka gildia chcesz walczyc!"
+				stop
+			if arg 3 parsed as integer is not set:
+				send "{@tag} &cPodaj godzine spotkania!"
+				stop
+			if arg 4 is not set:
+				send "{@tag} &cPodaj dodatkowy tekst!"
+				stop
+			if {skGuilds::TagGildii::%arg 2%} is not set:
+				send "{@tag} &cNie ma takiej gildii!"
+				stop
+			if {skGuilds::inGuild::%player%} is not set:
+				send "{@tag} &cNie jestes w zadnej gildii!"
+				stop
+			if {skGuilds::War::%arg 2%} is {skGuilds::inGuild::%player%}:
+				send "{@tag} &cTa gildia juz walczy z nami!"
+				stop
+			if {skGuilds::War::%arg 2%} is not set:
+				set {skGuilds::War::%arg 2%} to {skGuilds::inGuild::%player%}
+				broadcast "{@tag} &eGildia &6%{skGuilds::inGuild::%player%}%&e wyzwala gildie &6%arg 2% &ena wojne!"
+				broadcast "{@tag} &eDodatkowe informacje: &6%arg 4%"
+				broadcast "{@tag} &eMiejsce: &6%location of player%"
+				broadcast "{@tag} &eGodzina: &6%arg 3%:00"
+				loop {skGuilds::Czlonkowie::%arg 2%::*}:
+					send "{@tag} &4&lTwoja gildia zostala wyzwana na wojne!" to loop-value
+					stop
+				wait 25 minutes
+				delete {skGuilds::War::%arg 2%}
+				broadcast "&cBitwa pomiedzy &4%{skGuilds::inGuild::%player%}% &ca &4%arg 2%&c dobiegla konca!"
+			else:
+				send "{@tag} &cTa gildia juz jest z kims/z nami w walce!"
+		if arg 1 is "efekt" or "effect":
+			open chest with 3 rows named "&cEfekty:" to player
+			wait 1 tick
+			format slot 0 of player with 1 of white stained glass pane named "&f" to be unstealable
+			format slot 1 of player with 1 of white stained glass pane named "&f" to be unstealable
+			format slot 2 of player with 1 of white stained glass pane named "&f" to be unstealable
+			format slot 3 of player with 1 of white stained glass pane named "&f" to be unstealable
+			format slot 4 of player with 1 of white stained glass pane named "&f" to be unstealable
+			format slot 5 of player with 1 of white stained glass pane named "&f" to be unstealable
+			format slot 6 of player with 1 of white stained glass pane named "&f" to be unstealable
+			format slot 7 of player with 1 of white stained glass pane named "&f" to be unstealable
+			format slot 8 of player with 1 of white stained glass pane named "&f" to be unstealable
+			format slot 9 of player with 1 of white stained glass pane named "&f" to be unstealable
+
+			format slot 10 of player with 1 of potion of:8237 named "&9Oddychanie pod woda" with lore "&eCena: {@potion.shop.waterbreath}" to run "potionshop %player% 1"
+			format slot 11 of player with 1 of potion of:8227 named "&4Ochrona przed ogniem" with lore "&eCena: {@potion.shop.fireresistance}" to run "potionshop %player% 2"
+			format slot 12 of player with 1 of potion of:8238 named "&bNiewidzialnosc" with lore "&eCena: {@potion.shop.invisible}" to run "potionshop %player% 3"
+			format slot 13 of player with 1 of potion of:8201 named "&4Sila" with lore "&eCena: {@potion.shop.strength}" to run "potionshop %player% 4"
+			format slot 14 of player with 1 of potion of:8194 named "&bSzybkosc" with lore "&eCena: {@potion.shop.speed}" to run "potionshop %player% 5"
+			format slot 15 of player with 1 of potion of:8193 named "&dRegeneracja Zycia" with lore "&eCena: {@potion.shop.regeneration}" to run "potionshop %player% 6"
+			format slot 16 of player with 1 of potion of:8230 named "&1Widzenie w ciemnosci" with lore "&eCena: {@potion.shop.nightvision}" to run "potionshop %player% 7"
+
+
+			format slot 17 of player with 1 of white stained glass pane named "&f" to be unstealable
+			format slot 18 of player with 1 of white stained glass pane named "&f" to be unstealable
+			format slot 19 of player with 1 of white stained glass pane named "&f" to be unstealable
+			format slot 20 of player with 1 of white stained glass pane named "&f" to be unstealable
+			format slot 21 of player with 1 of white stained glass pane named "&f" to be unstealable
+			format slot 22 of player with 1 of white stained glass pane named "&f" to be unstealable
+			format slot 23 of player with 1 of white stained glass pane named "&f" to be unstealable
+			format slot 24 of player with 1 of white stained glass pane named "&f" to be unstealable
+			format slot 25 of player with 1 of white stained glass pane named "&f" to be unstealable
+			format slot 26 of player with 1 of white stained glass pane named "&f" to be unstealable
+			format slot 27 of player with 1 of white stained glass pane named "&f" to be unstealable
+			stop
+
+		if arg 1 is "pomoc" or "pomocy" or "helpme":
+			if arg 2 is not set:
+				send "{@tag} &cMusisz podac z jaka gildia walczysz!"
+				stop
+			if {skGuilds::Wait::%player%} is not set:
+				broadcast "{@tag} &6Gracz &e%player% &6potrzebuje pomocy!"
+				broadcast "{@tag} &6Walczy z gildia: &e%arg 2%"
+				broadcast "{@tag} &6Jego koordynaty: &e%location of player%"
+				set {skGuilds::Wait::%player%} to true
+				wait 3 minutes
+				delete {skGuilds::Wait::%player%}
+				send "{@tag} &cJuz mozesz zglosic sie o pomoc!"
+				stop
+			else:
+				send "{@tag} &cZglaszac pomoc mozna co 3 minuty!" to player
+				stop
+		if arg 1 is "1":
+			send "&8============ {@tag} &8============"
+			send "&e/g zaloz &8- &7Zaklada gildie."
+			send "&e/g zapros &8- &7Zaprasza do gildii."
+			send "&e/g dolacz &8- &7Dolacza do gildii."
+			send "&e/g wyrzuc &8- &7Wyrzuca z gildii."
+			send "&e/g baza &8- &7Teleportuje do bazy."
+			send "&e/g ustawbaze &8- &7Zaklada baze gildii."
+			send "&e/g info &8- &7Informacje o gildii."
+			send "&e/g ranking &8- &7Ranking graczy."
+			send "&8============ 1/2 &8============"
+		if arg 1 is "2":
+			send "&8============ {@tag} &8============"
+			send "&e/g lista &8- &7Lista gildii."
+			send "&e/g pvp &8- &7Zmienia ogien sojuszniczy."
+			send "&e/g opis &8- &7Zmienia opis gildii."
+			send "&e/g usun &8- &7Usuwa gildie."
+			send "&e/g powieksz &8- &7Powieksza teren gildii."
+			send "&e/guildchat &8- &7Chat gildii."
+			send "&e/top10 &8- &7Top 10 graczy"
+			send "&e/gtop10 &8- &7Top 10 gildii"
+			if player has permission "skguilds.admin" or "skguilds.*":
+				send "&4/ga resetuj &8- &cResetuje wszystkie zmienne."
+				send "&4/ga ustawspawn &8- &cUstawia globalny spawn."
+				send "&4/ga przeladuj &8- &cPrzeladowywuje gildie."
+				send "&4/ga zbanuj &8- &cBanuje gildie na zawsze."
+				send "&8============ 2/2 &8============"
+			else:
+				send "&8============ 2/2 &8============"
+		if arg 1 is not set:
+			send "{@tag} &cNie znaleziono komendy!"
+			send "{@tag} &cWpisz &e/g 1/2 &caby dowiedziec sie wiecej!"
+			stop
+
+# ====================== GADMIN ========================
+command /gadmin [<text>] [<text>] [<text>]:
+	aliases: ga, guildadmin, gildiaadmin, gildiadmin
+	trigger:
+		if player has permission "skguilds.admin" or "skguilds.*":
+			if arg 1 is "przeladuj" or "reload":
+				send "{@tag} &ePrzeladowywanie pliku..."
+				execute console command "/sk reload %script%"
+				wait 10 ticks
+				send "{@tag} &ePomyslnie przeladowano plik!"
+			if arg 1 is "setspawn" or "ustawspawn":
+				set {skGuilds::Spawn} to location of player
+				send "{@tag} Pomyslnie ustawiles globalny spawn gildii!"
+				stop
+			if arg 1 is "clear" or "czysc" or "resetuj" or "reset":
+				if arg 2 is set:
+					send "{@tag} &cZa duzo argumentow!"	
+				if arg 3 is set:
+					send "{@tag} &cZa duzo argumentow!"	
+				else:
+					send "{@tag} Resetowanie &cwszystkich &7danych... zaczekaj chwile."
+					wait 2 seconds
+					clear {skGuilds::*}
+					delete {skGuilds::*}
+					kick all players due to "&4[skGuilds] &cResetowanie wszystkich danych skryptu..."
+					stop
+			if arg 1 is "usun" or "rozwiaz" or "zbanuj":
+				if arg 2 is not set:
+					send "{@tag} &cMusisz podac gildie!"
+					stop
+				if arg 3 is not set:
+					send "{@tag} &cMusisz podac powod!"
+					stop
+				if {skGuilds::GildiaTag::%arg 2%} is not set:
+					send "{@tag} &cNie ma takiej gildii!"
+					stop
+				if arg 2 is set:
+					if arg 3 is set:
+						set {_l} to {skGuilds::Lider::%arg 2%}
+						set {_arg2} to arg 2
+						set {_arg3} to {skGuilds::NazwaGildii::%{_arg2}%}
+						edit tag of {_l} to ""
+						delete {skGuilds::GildiaTag::%{_arg2}%}
+						delete {skGuilds::GildiaNazwa::%{_arg3}%} 
+						delete {skGuilds::TagGildii::%{_arg2}%} 
+						clear {skGuilds::inGuild::%{_l}%}
+						remove {_arg3} from {skGuilds::Gildie::*}
+						remove {_arg2} from {skGuilds::Tagi::*}
+						delete {skGuilds::Czlonkowie::%{_arg2}%::*}
+						delete {skGuilds::PVP::%{_arg2}%}
+						delete {skGuilds::%{_arg2}%::Powieksz::LVL::1}
+						delete {skGuilds::%{_arg2}%::Powieksz::LVL::2}
+						delete {skGuilds::%{_arg2}%::Powieksz::LVL::3}
+						delete {skGuilds::%{_arg2}%::Powieksz::LVL::4}
+						delete {skGuilds::%{_arg2}%::Powieksz::LVL::5}
+						delete {skGuilds::Opis::%{_arg2}%}
+						delete {skGuilds::Lider::%{_arg2}%}
+						delete {skGuilds::Zycia::%{_arg2}%}
+						set {skGuilds::GuildPoints::%{_arg2}%} to "Brak!"
+						delete {skGuilds::Baza::%{_arg2}%}
+						delete {skGuilds::Polozenie::%{_arg2}%} 
+						delete {skGuilds::PodbiteGildie::%{_arg2}%} 
+						delete {skGuilds::Podbicia::%{_arg2}%} 
+						delete {skGuilds::Zabojstwa::%{_arg2}%}
+						set {_Gildia} to {_arg2}
+						remove {_Gildia} from {skGuilds::Cuboids::*}
+						delete {skGuilds::Cuboid::Large::%{_Gildia}%}
+						set block at {skGuilds::Cuboid::Center::%{_Gildia}%} to air
+						delete {skGuilds::Cuboid::Center::%{_Gildia}%} 
+						delete {skGuilds::DataZalozenia::%{_Gildia}%}
+						"%{_arg2}%".Region.delete{};
+						broadcast ""
+						broadcast "&4Gildia %arg 2% zostala zbanowana!"
+						broadcast "&4Powod: &c%arg 3%"
+						broadcast ""
+						send "{@tag} &cPoprawnie zbanowales/usunales gildie!"
+		else:
+			send "{@tag} &cNie masz do tego uprawnien!"
+
+
+# ====================== SOJUSZ ===========================
+command /sojusz [<text>] [<text>]:
+	trigger:
+		if {skGuilds::inGuild::%player%} is set:
+			if arg 1 is not set:
+				send "&8============ {@tag} &8============"
+				send "&e/sojusz zapros &8- &7Wysyla zaproszenie do sojuszu"
+				send "&e/sojusz akceptuj &8- &7Akceptuje zaproszenie do sojuszu"
+				send "&e/sojusz zerwij &8- &7Zrywa sojusz z gildia"
+				send "&8============ {@tag} &8============"
+				stop
+			if arg 1 is "zapros" or "invite" or "inv":
+				if arg 2 is not set:
+					send "{@tag} &cMusisz podac tag gildii!"
+					stop
+				if {skGuilds::Lider::%{skGuilds::inGuild::%player%}%} is not set:
+					send "{@tag} &cNie jestes liderem zadnej gildii!"
+					stop
+				if {skGuilds::GildiaTag::%arg 2%} is not set:
+					send "{@tag} &cNie ma takiej gildii!"
+					stop
+				if {skGuilds::ZDS::%arg 2%} is true:
+					send "{@tag} &cTa gildia jest juz zaproszona do sojuszu!"
+					stop
+				if {skGuilds::Sojusz::%{skGuilds::inGuild::%player%}%} is "%arg 2%":
+					send "{@tag} &cTa gildia juz jest z wami w sojuszu!"
+					stop
+				if {skGuilds::Lider::%arg 2%} parsed as player is offline:
+					send "{@tag} &cLider gildii %arg 2% nie jest online!"
+					stop
+				if arg 2 is {skGuilds::inGuild::%player%}:
+					send "{@tag} &cNie mozesz zawrzec sojuszu z wlasna gildia!"
+					stop
+				if {skGuilds::inGuild::%player%} is not set:
+					send "{@tag} &cNie jestes w zadnej gildii!"
+					stop
+				set {_g} to {skGuilds::inGuild::%player%}
+				set {_lider} to {skGuilds::Lider::%arg 2%} parsed as player
+				send "{@tag} Wyslales zaproszenie do sojuszu, dla gildii &e%arg 2%"
+				send "{@tag} &eTwoja gildia zostala zaproszona do sojuszu!" to {_lider}
+				send "{@tag} &eAkceptuj komenda &6/sojusz akceptuj %{_g}%&e!" to {_lider}
+				set {skGuilds::ZDS::%arg 2%} to true
+				wait 120 second
+				set {skGuilds::ZDS::%arg 2%} to false
+				stop
+			if arg 1 is "akceptuj":
+				if arg 2 is not set:
+					send "{@tag} &cMusisz podac tag gildii!"
+					stop
+				if {skGuilds::Lider::%{skGuilds::inGuild::%player%}%} is not set:
+					send "{@tag} &cNie jestes liderem zadnej gildii!"
+					stop
+				if {skGuilds::GildiaTag::%arg 2%} is not set:
+					send "{@tag} &cNie ma takiej gildii!"
+					stop
+				if {skGuilds::ZDS::%arg 2%} is false:
+					send "{@tag} &cNie masz zaproszenia od tej gildii!"
+					stop
+				if {skGuilds::Sojusz::%{skGuilds::inGuild::%player%}%} is "%arg 2%":
+					send "{@tag} &cTa gildia jest juz z wami w sojuszu!"
+					stop
+				set {_nick} to {skGuilds::Lider::%arg 2%} parsed as player
+				set {_g} to {skGuilds::inGuild::%player%}
+				set {skGuilds::Sojusz::%{_g}%} to "%arg 2%"
+				delete {skGuilds::ZDS::%arg 2%} 
+				add "%arg 2%" to {skGuilds::Sojusz::%{_g}%::*}
+				add "%{_g}%" to {skGuilds::Sojusz::%arg 2%::*}
+				broadcast "{@tag} &7Gildia &e%{_g}% &7zawarla sojusz z gildia &e%arg 2%"
+			if arg 1 is "zerwij":
+				if arg 2 is not set:
+					send "{@tag} &cMusisz podac tag gildii!"
+					stop
+				if {skGuilds::Lider::%{skGuilds::inGuild::%player%}%} is not set:
+					send "{@tag} &cNie jestes liderem zadnej gildii!"
+					stop
+				if {skGuilds::GildiaTag::%arg 2%} is not set:
+					send "{@tag} &cTaka gildia nie istnieje!"
+					stop
+				if {skGuilds::Sojusz::%arg 2%} is not set:
+					send "{@tag} &cNie jestes w sojuszu z ta gildia!"
+					stop
+				set {_nick} to {skGuilds::Lider::%arg 2%} parsed as player
+				delete {skGuilds::Sojusz::%arg 2%}
+				remove "%arg 2%" from {skGuilds::Sojusz::%{_g}%::*}
+				remove "%{_tag}%" from {skGuilds::Sojusz::%arg 2%::*}
+				broadcast "{@tag} Gildia &e%{skGuilds::inGuild::%player%}% &7zerwala sojusz z gildia &e%arg 2%"
+		else:
+			send "{@tag} &cNie masz zadnej gildii!"
+
+# ====================== CHAT GILDYJNY ===========================
+command /guildchat [<text>]:
+	aliases: c, chat, gchat, gc
+	trigger:
+		if arg 1 is not set:
+			send "{@tag} &cMusisz podac wiadomosc!"
+			stop
+		if {skGuilds::inGuild::%player%} is set:	
+			set {_g} to {skGuilds::inGuild::%player%}
+			if {skGuilds::Lider::%{_g}%} is player:
+				loop {skGuilds::Czlonkowie::%{_g}%::*}:
+					loop all players:
+						loop-value is loop-player:
+							set {_guildchatlider} to {guildchat.lider}
+							replace all "{TAG}" with "%{skGuilds::inGuild::%player%}%" in {_guildchatlider}
+							replace all "{NICK}" with "%player%" in {_guildchatlider}
+							replace all "{MSG}" with "%arg 1%" in {_guildchatlider}
+							send "%{_guildchatlider}%" to loop-player
+							stop
+			else:
+				loop {skGuilds::Czlonkowie::%{_g}%::*}:
+					loop all players:
+						loop-value is loop-player:
+							set {_guildchatnormal} to {guildchat.normal}
+							replace all "{TAG}" with "%{skGuilds::inGuild::%player%}%" in {_guildchatnormal}
+							replace all "{NICK}" with "%player%" in {_guildchatnormal}
+							replace all "{MSG}" with "%arg 1%" in {_guildchatnormal}
+							send "%{_guildchatnormal}%" to loop-player
+							stop
+		else:
+			send "{@tag} &cNie jestes w zadnej gildii!"
+			stop
+on load:
+	set {guildchat.lider} to "{@chat.format.lider}"
+	set {guildchat.normal} to "{@chat.format.normal}"
+
+# ====================== TOP 10 - Pomógł PiratJaskiniowy. Dzięki! ===========================
+
+
+command /top10:
+    trigger:
+        send "{@tag} &8{ &cTOP 10 GRACZY &8}"
+        loop {skGuilds::Ranking::*}:
+            set {_lista::%loop-index%} to loop-value
+        set {_num} to size of {_lista::*}
+        loop {_num} times:
+            loop {_lista::*}:
+                {_value.%loop-number%} is not set:
+                    set {_value.%loop-number%} to loop-value
+                    set {_index.%loop-number%} to loop-index
+                loop-value is more than {_value.%loop-number%}:
+                    set {_value.%loop-number%} to loop-value
+                    set {_index.%loop-number%} to loop-index
+            delete {_lista::%{_index.%loop-number%}%}
+        loop 10 times:
+            if loop-number is less than or equal to {_num}:
+                send "&6%loop-number%. &f%{skGuilds::Nick::%{_index.%loop-number%}%}% &8(&e%{_value.%loop-number%}%&8)"
+
+
+command /gtop10:
+    trigger:
+        send "{@tag} &8{ &cTOP 10 GILDII &8}"
+        loop {skGuilds::GuildPoints::*}:
+            set {_lista::%loop-index%} to loop-value
+        set {_num} to size of {_lista::*}
+        loop {_num} times:
+            loop {_lista::*}:
+                {_value.%loop-number%} is not set:
+                    set {_value.%loop-number%} to loop-value
+                    set {_index.%loop-number%} to loop-index
+                loop-value is more than {_value.%loop-number%}:
+                    set {_value.%loop-number%} to loop-value
+                    set {_index.%loop-number%} to loop-index
+            delete {_lista::%{_index.%loop-number%}%}
+        loop 10 times:
+            if loop-number is less than or equal to {_num}:
+                send "&6%loop-number%. &f%{skGuilds::TagGildii::%{_index.%loop-number%}%}% &8(&e%{_value.%loop-number%}%&8)"
+
+every 1 second:
+    if {@tab} is true:
+        loop {skGuilds::GuildPoints::*}:
+            set {_lista::%loop-index%} to loop-value
+        set {_num} to size of {_lista::*}
+        loop {_num} times:
+            loop {_lista::*}:
+                {_value.%loop-number%} is not set:
+                    set {_value.%loop-number%} to loop-value
+                    set {_index.%loop-number%} to loop-index
+                loop-value is more than {_value.%loop-number%}:
+                    set {_value.%loop-number%} to loop-value
+                    set {_index.%loop-number%} to loop-index
+            delete {_lista::%{_index.%loop-number%}%}
+        loop 10 times:
+            if loop-number is less than or equal to {_num}:
+                set {g.tab.%loop-number%} to "&6%loop-number%. &f%{skGuilds::TagGildii::%{_index.%loop-number%}%}%"
+            else:
+                set {g.tab.%loop-number%} to "&6%loop-number%. "
+every 1 second:
+    if {@tab} is true:
+        loop {skGuilds::Ranking::*}:
+            set {_lista::%loop-index%} to loop-value
+        set {_num} to size of {_lista::*}
+        loop {_num} times:
+            loop {_lista::*}:
+                {_value.%loop-number%} is not set:
+                    set {_value.%loop-number%} to loop-value
+                    set {_index.%loop-number%} to loop-index
+                loop-value is more than {_value.%loop-number%}:
+                    set {_value.%loop-number%} to loop-value
+                    set {_index.%loop-number%} to loop-index
+            delete {_lista::%{_index.%loop-number%}%}
+        loop 10 times:
+            if loop-number is less than or equal to {_num}:
+                set {p.tab.%loop-number%} to "&6%loop-number%. &f%{skGuilds::Nick::%{_index.%loop-number%}%}%"
+            else:
+                set {p.tab.%loop-number%} to "&6%loop-number%. "
+
+# ====================== TAB ===========================
+on join:
+	set {_Tab} to "tab"
+	set {_gt} to {skGuilds::inGuild::%player%}
+	"{_Tab}".Tab.set{1, ""};
+	"{_Tab}".Tab.set{2, ""};
+	"{_Tab}".Tab.set{3, ""};
+	"{_Tab}".Tab.set{4, "&7TOP: &3Graczy"};
+	"{_Tab}".Tab.set{5, ""};
+	"{_Tab}".Tab.set{6, "&7TOP: &3Gildie"};
+	"{_Tab}".Tab.set{7, ""};
+	"{_Tab}".Tab.set{8, ""};
+	"{_Tab}".Tab.set{9, ""};
+	"{_Tab}".Tab.set{10, ""};
+	"{_Tab}".Tab.set{11, ""};
+	"{_Tab}".Tab.set{12, ""};
+	"{_Tab}".Tab.set{13, "%{p.tab.1}%"};
+	"{_Tab}".Tab.set{14, "&7Nick:"};
+	"{_Tab}".Tab.set{15, "%{g.tab.1}%&1"};
+	"{_Tab}".Tab.set{16, "%{p.tab.2}%"};
+	"{_Tab}".Tab.set{17, "&e%player%"};
+	"{_Tab}".Tab.set{18, "%{g.tab.2}%&2"};
+	"{_Tab}".Tab.set{19, "%{p.tab.3}%"};
+	"{_Tab}".Tab.set{20, ""};
+	"{_Tab}".Tab.set{21, "%{g.tab.3}%&3"};
+	"{_Tab}".Tab.set{22, "%{p.tab.4}%"};
+	"{_Tab}".Tab.set{23, "&7Ranking:"};
+	"{_Tab}".Tab.set{24, "%{g.tab.4}%&4"};
+	"{_Tab}".Tab.set{25, "%{p.tab.5}%"};
+	"{_Tab}".Tab.set{26, "&b%{skGuilds::Ranking::%player%}%"};
+	"{_Tab}".Tab.set{27, "%{g.tab.5}%&5"};
+	"{_Tab}".Tab.set{28, "%{p.tab.6}%"};
+	"{_Tab}".Tab.set{29, ""};
+	"{_Tab}".Tab.set{30, "%{g.tab.6}%&6"};
+	"{_Tab}".Tab.set{31, "%{p.tab.7}%"};
+	"{_Tab}".Tab.set{32, "&cZgony:"};
+	"{_Tab}".Tab.set{33, "%{g.tab.7}%&7"};
+	"{_Tab}".Tab.set{34, "%{p.tab.8}%"};
+	"{_Tab}".Tab.set{35, "&7%{skGuilds::Zgony::%player%}%"};
+	"{_Tab}".Tab.set{36, "%{g.tab.8}%&8"};
+	"{_Tab}".Tab.set{37, "%{p.tab.9}%"};
+	"{_Tab}".Tab.set{38, ""};
+	"{_Tab}".Tab.set{39, "%{g.tab.9}%&9"};
+	"{_Tab}".Tab.set{40, "%{p.tab.10}%"};
+	"{_Tab}".Tab.set{41, "&aZabojstwa:"};
+	"{_Tab}".Tab.set{42, "%{g.tab.10}%&0"};
+	"{_Tab}".Tab.set{43, ""};
+	"{_Tab}".Tab.set{44, "&7%{skGuilds::Zabojstwa::%player%}%"};
+	"{_Tab}".Tab.set{45, ""};
+	"{_Tab}".Tab.set{46, ""};
+	"{_Tab}".Tab.set{47, ""};
+	"{_Tab}".Tab.set{48, ""};
+	"{_Tab}".Tab.set{49, ""};
+	"{_Tab}".Tab.set{50, "&eAktualna gildia:"};
+	"{_Tab}".Tab.set{51, "{@tag}"};
+	"{_Tab}".Tab.set{52, ""};
+	if {skGuilds::inGuild::%player%} is set:
+		"{_Tab}".Tab.set{53, "&b%{skGuilds::inGuild::%player%}%"};
+	else:
+		"{_Tab}".Tab.set{53, "&bBrak!"};
+	"{_Tab}".Tab.set{54, ""};
+	"{_Tab}".Tab.set{55, ""};
+	"{_Tab}".Tab.set{56, ""};
+	"{_Tab}".Tab.set{57, ""};
+	"{_Tab}".Tab.set{58, ""};
+	"{_Tab}".Tab.set{59, ""};
+	"{_Tab}".Tab.set{60, ""};
+	"{_Tab}".Tab.send{player};
+
+command /x [<text>]:
+	trigger:
+		send "&c%{skGuilds::GuildPoints::%arg 1%}%"
+		send "&e%{skGuilds::Ranking::%player%}%"
+# ====================== RELOG ==========================
+on join:
+	if {skGuilds::Wait::%player%} is set:
+		delete {skGuilds::Wait::%player%}
+		stop
+
+
+# ====================== LADOWANIE CUBOIDOW I CHATU ===========================
+on load:
+	set {guild.chat} to "{@guild.chat}"
+	loop {skGuilds::Cuboids::*}: 
+		"%loop-value%".Region.selectLS{{skGuilds::Cuboid::Center::%loop-value%}, {skGuilds::Cuboid::Large::%loop-value%}};
+
+# ====================== KLIKANIE / NISZCZENIE BLOKU GILDYJNEGO ===========================
+on rightclick:
+	if clicked block is {@guild.item}:
+		set {_region} to Region.getAt{location of player};
+		if {_region} is not set:
+			stop
+		if {_region} is set:
+			cancel event
+			loop {skGuilds::Czlonkowie::%{_region}%::*}:
+				if loop-value is not player:
+					if {skGuilds::inGuild::%player%} is set:
+						if {skGuilds::JuzPodbito::%player%::%{_region}%} is not set:
+							if {skGuilds::Zycia::%{_region}%} is 3:
+								set {skGuilds::Zycia::%{_region}%} to 2
+								set {skGuilds::JuzPodbito::%player%::%{_region}%} to true
+								send "{@tag} Podbiles gildie &e%{_region}%&7! Pozostalo jej &6%{skGuilds::Zycia::%{_region}%}%&7 zyc!"
+								stop
+							if {skGuilds::Zycia::%{_region}%} is 2:
+								set {skGuilds::Zycia::%{_region}%} to 1
+								set {skGuilds::JuzPodbito::%player%::%{_region}%} to true
+								send "{@tag} Podbiles gildie &e%{_region}%&7! Pozostalo jej &6%{skGuilds::Zycia::%{_region}%}%&7 zyc!"
+								stop
+							if {skGuilds::Zycia::%{_region}%} is 1:
+								set {skGuilds::JuzPodbito::%player%::%{_region}%} to true
+								set {_l} to {skGuilds::Lider::%{_region}%} parsed as player
+								set {_arg2} to {_region}
+								set {_arg3} to {skGuilds::NazwaGildii::%{_arg2}%}
+								edit tag of {_l} to ""
+								delete {skGuilds::GildiaTag::%{_arg2}%}
+								delete {skGuilds::GildiaNazwa::%{_arg3}%} 
+								delete {skGuilds::TagGildii::%{_arg2}%} 
+								clear {skGuilds::inGuild::%loop-value%}
+								remove {_arg3} from {skGuilds::Gildie::*}
+								remove {_arg2} from {skGuilds::Tagi::*}
+								delete {skGuilds::Czlonkowie::%{_arg2}%::*}
+								delete {skGuilds::PVP::%{_arg2}%}
+								delete {skGuilds::%{_arg2}%::Powieksz::LVL::1}
+								delete {skGuilds::%{_arg2}%::Powieksz::LVL::2}
+								delete {skGuilds::%{_arg2}%::Powieksz::LVL::3}
+								delete {skGuilds::%{_arg2}%::Powieksz::LVL::4}
+								delete {skGuilds::%{_arg2}%::Powieksz::LVL::5}
+								delete {skGuilds::Opis::%{_arg2}%}
+								delete {skGuilds::Lider::%{_arg2}%}
+								set {skGuilds::GuildPoints::%{_arg2}%} to "Brak!"
+								delete {skGuilds::Baza::%{_arg2}%}
+								delete {skGuilds::Polozenie::%{_arg2}%} 
+								delete {skGuilds::PodbiteGildie::%{_arg2}%} 
+								delete {skGuilds::Podbicia::%{_arg2}%} 
+								delete {skGuilds::Zabojstwa::%{_arg2}%}
+								set {_Gildia} to {_arg2}
+								remove {_Gildia} from {skGuilds::Cuboids::*}
+								delete {skGuilds::Cuboid::Large::%{_Gildia}%}
+								set block at {skGuilds::Cuboid::Center::%{_Gildia}%} to air
+								delete {skGuilds::Cuboid::Center::%{_Gildia}%} 
+								delete {skGuilds::DataZalozenia::%{_Gildia}%}
+								"%{_arg2}%".Region.delete{};
+								broadcast "{@tag} &3Gildia &b%{_arg3}% [%{_region}%] &3zostala podbita przez &b%player%&3!"
+								stop
+						else:
+							send "{@tag} &cJuz podbiles ta gildie!"
+					else:
+						send "{@tag} &cMusisz byc w gildii!"
+				else:
+					send "{@tag} &cNie mozesz podbic wlasnej gildii!"
+command /h:
+	trigger:
+		send "%{skGuilds::Zycia::VOOT}%"
+on leftclick:
+	if clicked block is {@guild.item}:
+		cancel event
+on break of {@guild.item}:
+	cancel event
+
+# ====================== WIADOMOSCI PO WEJSCIU DO GILDII + INTRUZ ===========================
+on anymove:
+	if {skGuilds::%player%::Gildia} is not set:
+		set {skGuilds::%player%::Gildia} to "&cBRAK DANYCH :("
+	if Region.getAt{location of player} is not set:
+		set {_guild} to "&cBRAK DANYCH :("
+	else:
+		set {_guild} to Region.getAt{location of player}
+	if {_guild} is not {skGuilds::%player%::Gildia}:
+		if {_guild} is "None" or "<none>" or "&cBRAK DANYCH :(":
+			set {_lider} to {skGuilds::Lider::%{skGuilds::%player%::Gildia}%} 
+			send "{@tag} Wyszedles z terenu gildii &e%{skGuilds::%player%::Gildia}%" to player
+			send "{@tag} &4Intruz na terenie gildii! &c(%player%)" to {_lider}
+		else:
+			set {_lider} to {skGuilds::Lider::%{_guild}%} 
+			send "{@tag} Wszedles na teren gildii &e%{_guild}%" to player
+			send "{@tag} &4Intruz na terenie gildii! &c(%player%)" to {_lider}
+		set {skGuilds::%player%::Gildia} to {_guild}
+
+# ====================== NISZCZENIE OBSYDIANU :) ===========================
+# COMING SOON
+
+
+# ====================== CHAT, CZYLI COS, CZYM MOGE SIE POCHWALIC :) ===========================
+
+on chat:
+	set {_chat} to {guild.chat}
+	{skGuilds::inGuild::%player%} is set:
+		set {_tag} to {skGuilds::inGuild::%player%}
+	{skGuilds::Lider::%{skGuilds::inGuild::%player%}%} is set:
+		set {_tag} to {skGuilds::inGuild::%player%}
+	if {_tag} is not set:
+		replace all "{RANK}" with "%{skGuilds::Ranking::%player%}%" in {_chat}
+		replace all "{NICK}" with "%player%" in {_chat}
+		replace all "{MSG}" with "%message%" in {_chat}
+		replace all "{TAG}" with "" in {_chat}
+		replace all "Â" with "" in {_chat}
+		broadcast "%{_chat}%"
+		cancel event
+		stop
+	replace all "{RANK}" with "%{skGuilds::Ranking::%player%}%" in {_chat}
+	replace all "{NICK}" with "%player%" in {_chat}
+	replace all "{MSG}" with "%message%" in {_chat}
+	replace all "Â" with "" in {_chat}
+	replace all "{TAG}" with "{@guild.tagformat}" in {_chat}
+	broadcast "%{_chat}%"
+	cancel event
+	stop
+
+# ====================== NISZCZENIE KLOCKOW ===========================
+on break:
+	if player doesn't have permission "skguilds.admin":
+		if location of event-block is in any region:
+			set {_region} to Region.getAt{location of player};
+			if "%{_region}%" is "%{gildie::wGildii::%name of player%}%":
+				stop
+			else:
+				cancel event
+				send "&cTo jest teren innej gildi!"
+				stop
+
+# ====================== STAWIANIE KLOCKOW ===========================
+on place:
+	if player doesn't have permission "skguilds.admin":
+		if location of event-block is in any region:
+			set {_region} to Region.getAt{location of player};
+			if "%{_region}%" is "%{gildie::wGildii::%name of player%}%":
+				stop
+			else:
+				cancel event
+				send "&cTo jest teren innej gildi!"
+				stop
+# ====================== STONIARKA W KILOFIE (ADDON) ===========================
+on join:
+	set {SKSP::Mode::%player%} to true
+
+on rightclick with pickaxe:
+	if player has permission "skstonepick.use":
+		if {SKSP::Mode::%player%} is true:
+			if {SKSP::Cooldown::%player%} is false:
+				set {SKSP::Cooldown::%player%} to true
+				set {SKSP::Mode::%player%} to false
+				send "{@tag} Wlaczyles tryb: &aSTONE"
+				wait 1 second
+				set {SKSP::Cooldown::%player%} to false
+		else:
+			if {SKSP::Cooldown::%player%} is false:
+				set {SKSP::Cooldown::%player%} to true
+				set {SKSP::Mode::%player%} to true
+				send "{@tag} Wlaczyles tryb: &cNORMAL"
+				wait 1 second
+				set {SKSP::Cooldown::%player%} to false
+
+on mine a stone:
+	if {SKSP::Mode::%player%} is false:
+		wait 3 second
+		set event-block to stone
+# ====================== PVP W GILDII ===========================
+on damage of player:
+	if {skGuilds::inGuild::%attacker%} is set:
+		if {skGuilds::inGuild::%victim%} is set:
+			if {skGuilds::Czlonkowie::%{skGuilds::inGuild::%attacker%}%::*} contain victim:
+				if {skGuilds::PVP::%{skGuilds::inGuild::%attacker%}%} is false:
+					cancel event
+					send "{@tag} &cNie mozesz uderzac graczy z gildii!" to attacker
+					stop
+			if {skGuilds::Czlonkowie::%{skGuilds::inGuild::%victim%}%::*} contain attacker:
+				if {skGuilds::PVP::%{skGuilds::inGuild::%victim%}%} is false:
+					cancel event
+					send "{@tag} &cNie mozesz uderzac graczy z gildii!" to attacker
+					stop
+# ====================== RANKING / ON DEATH ===========================
+on death:
+	if victim is a player:
+		if attacker is a player:
+			add 1 to {skGuilds::Zabojstwa::%attacker%}
+			add 1 to {skGuilds::Zgony::%victim%}
+			set {_agt} to {skGuilds::inGuild::%attacker%}
+			set {_vgt} to {skGuilds::inGuild::%victim%}
+			if {skGuilds::inGuild::%victim%} is set:
+				if {skGuilds::inGuild::%attacker%} is set:
+					set {_pktattacker} to random integer between 1 and 100
+					add {_pktattacker} to {skGuilds::GuildPoints::%{_agt}%}
+					add {_pktattacker} to {skGuilds::Ranking::%attacker%}
+					set {_pktvictim} to random integer between -1 and -50
+					add {_pktvictim} to {skGuilds::GuildPoints::%{_vgt}%}
+					add {_pktvictim} to {skGuilds::Ranking::%victim%}
+					set death message to "&cGracz %victim% [%{_vgt}%] zostal zabity przez %attacker% [%{_agt}%] (%{_pktattacker}%)"
+					stop
+				stop
+			if {skGuilds::inGuild::%attacker%} is set:
+				set {_pktattacker} to random integer between 1 and 100
+				add {_pktattacker} to {skGuilds::GuildPoints::%{_agt}%}
+				add {_pktattacker} to {skGuilds::Ranking::%attacker%}
+				set {_pktvictim} to random integer between -1 and -50
+				add {_pktvictim} to {skGuilds::Ranking::%victim%}
+				set death message to "&cGracz %victim% zostal zabity przez %attacker% [%{_agt}%] (%{_pktattacker}%)"
+				stop
+			if {skGuilds::inGuild::%victim%} is set:
+				set {_pktvictim} to random integer between -1 and -50
+				add {_pktvictim} to {skGuilds::GuildPoints::%{_vgt}%}
+				add {_pktvictim} to {skGuilds::Ranking::%victim%}
+				set {_pktattacker} to random integer between 1 and 100
+				add {_pktattacker} to {skGuilds::Ranking::%attacker%}
+				set death message to "&cGracz %victim% [%{_vgt}%] zostal zabity przez %attacker% (%{_pktattacker}%)"
+				stop
+			else:
+				set {_pktvictim} to random integer between -1 and -50
+				add {_pktvictim} to {skGuilds::Ranking::%victim%}
+				set {_pktattacker} to random integer between 1 and 100
+				add {_pktattacker} to {skGuilds::Ranking::%attacker%}
+				set death message to "&cGracz %victim% zostal zabity przez %attacker% (%{_pktattacker}%)"              
+		else:
+			if attacker is a creeper or a zombie or a enderman or a spider or a ghast or a skeleton or a slime or a witch or a cave spider or a wolf or a zombie pigman or a blaze or a magma cube or a silverfish or a wither skeleton:
+				strike lightning effect at the player
+				add 1 to {skGuilds::Zgony::%victim%}
+				add -30 to {skGuilds::GuildPoints::%{_vgt}%}
+				add -30 to {skGuilds::Ranking::%victim%}
+				set death message to "{@tag} %victim% umarl..."
+			else:
+				strike lightning effect at the player
+				add 1 to {skGuilds::Zgony::%victim%}
+				add -30 to {skGuilds::GuildPoints::%{_vgt}%}
+				add -30 to {skGuilds::Ranking::%victim%}
+				set death message to "{@tag} %victim% umarl..."
+# ====================== POTION SHOP ===========================
+command /potionshop [<player>] [<text>]:
+	executable by: console
+	trigger:
+		if arg 1 is set:
+			if arg 2 is "1":
+				if player-arg has {@potion.shop.waterbreath}:
+					remove {@potion.shop.waterbreath} from the player-arg
+					apply water breathing to player-arg for 3 minutes
+					send "{@tag} Kupiles efekt: &9Oddychanie pod woda" to player-arg
+				else:
+					send "{@tag} &cNie masz wymaganych przedmiotow!" to player-arg
+					stop
+			if arg 2 is "2":
+				if player-arg has {@potion.shop.fireresistance}:
+					remove {@potion.shop.fireresistance} from the player-arg
+					apply fire resistance to player-arg for 3 minutes
+					send "{@tag} Kupiles efekt: &4Ochrona przed ogniem" to player-arg
+				else:
+					send "{@tag} &cNie masz wymaganych przedmiotow!" to player-arg
+					stop
+			if arg 2 is "3":
+				if player-arg has {@potion.shop.invisible}:
+					remove {@potion.shop.invisible} from the player-arg
+					apply invisibility to player-arg for 3 minutes
+					send "{@tag} Kupiles efekt: &bNiewidzialnosc" to player-arg
+				else:
+					send "{@tag} &cNie masz wymaganych przedmiotow!" to player-arg
+					stop
+			if arg 2 is "4":
+				if player-arg has {@potion.shop.strength}:
+					remove {@potion.shop.strength} from the player-arg
+					apply strength to player-arg for 3 minutes
+					send "{@tag} Kupiles efekt: &4Sila" to player-arg
+				else:
+					send "{@tag} &cNie masz wymaganych przedmiotow!" to player-arg
+					stop
+			if arg 2 is "5":
+				if player-arg has {@potion.shop.speed}:
+					remove {@potion.shop.speed} from the player-arg
+					apply speed to player-arg for 3 minutes
+					send "{@tag} Kupiles efekt: &bSzybkosc" to player-arg
+				else:
+					send "{@tag} &cNie masz wymaganych przedmiotow!" to player-arg
+					stop
+			if arg 2 is "6":
+				if player-arg has {@potion.shop.regeneration}:
+					remove {@potion.shop.regeneration} from the player-arg
+					apply regeneration to player-arg for 45 seconds
+					send "{@tag} Kupiles efekt: &dRegeneracja Zycia" to player-arg
+				else:
+					send "{@tag} &cNie masz wymaganych przedmiotow!" to player-arg
+					stop
+			if arg 2 is "7":
+				if player-arg has {@potion.shop.nightvision}:
+					remove {@potion.shop.nightvision} from the player-arg
+					apply night vision to player-arg for 3 minutes
+					send "{@tag} Kupiles efekt: &1Widzenie w ciemnosci" to player-arg
+				else:
+					send "{@tag} &cNie masz wymaganych przedmiotow!" to player-arg
+					stop
+# ====================== NOWE PRZEDMIOTY ===========================
+on load:
+	register new shaped recipe for bow of power 6 and flame 6 and punch 6 named "&eLuk Wyslannikow" with lore "&8~ skGuilds" using diamond block, blaze rod, air, gold block, nether star, blaze rod, emerald block, blaze rod, air
+
+	register new shaped recipe for bow of unbreaking 10 named "&eLuk Zniszczenia" with lore "&8~ skGuilds" using tnt, blaze rod, air, tnt, nether star, blaze rod, tnt, blaze rod, air
+
+	register new shaped recipe for diamond sword of knockback 10 named "&eMiecz Piekielnego Odrzutu" with lore "&8~ skGuilds" using air, diamond, air, string, diamond, string, air, blaze rod, air
+
+	register new shaped recipe for diamond sword of sharpness 6 named "&eExcalibur" with lore "&8~ skGuilds" using air, diamond block, air, nether star, diamond block, nether star, air, blaze rod, air
+
+
+on projectile hit:
+	if shooter's tool is bow of power 6 and flame 6 and punch 6 named "&eLuk Wyslannikow": 
+		spawn zombie at location of projectile
+		set last spawned entity's display name to "&c&lWyslannik"
+		apply speed 4 to last spawned entity for 10 seconds
+		apply strength 2 to last spawned entity for 5 seconds
+		damage shooter's tool by 5
+		stop
+	if shooter's tool is bow of unbreaking 10:
+		create an explosion of force 2 at location of projectile
+		damage shooter's tool by 10
+		stop
+
+on damage:
+	if attacker's tool is diamond sword of knockback 10:
+		push the victim upwards at speed 0.2
+
+on rightclick with diamond sword of sharpness 6:
+	heal player
+	spawn 350 of particle fireworks Spark:1 at location of player
+	loop 10 times:
+		wait 5 ticks
+		spawn 350 of particle heart at location of player
+
+
+				
+# ====================== ZAPISYWANIE/ODPISYWANIE ISTNIEJACEGO GRACZA ===========================
+on join:
+	if {skGuilds::Gracze::*} contains player:
+		stop
+	else:
+		add player to {skGuilds::Gracze::*}
+on quit:
+	remove player from {skGuilds::Gracze::*}
+# ====================== FUNKCJE GRACZA ===========================
+on first join:
+	set {skGuilds::Ranking::%player%} to 1000
+	set {skGuilds::Zgony::%player%} to 0
+	set {skGuilds::Zabojstwa::%player%} to 0
+	delete {skGuilds::inGuild::%player%}
+	send "{@tag} Ten serwer uzywa skryptu &eskGuilds&7 by &eAdamGrzegorz&7!" to player
+	stop
+on join:
+	if {skGuilds::Ranking::%player%} is not set:
+		set {skGuilds::Ranking::%player%} to 1000
+	if {skGuilds::Zgony::%player%} is not set:
+		set {skGuilds::Zgony::%player%} to 0
+	if {skGuilds::Zabojstwa::%player%} is not set:
+		set {skGuilds::Zabojstwa::%player%} to 0
+	if {skGuilds::inGuild::%player%} is not set:
+		clear {skGuilds::inGuild::%player%}
+	set {skGuilds::LastJoin::%player%} to now
+	set {skGuilds::TPCooldown::%player%} to false
+	if {skGuilds::inGuild::%player%} is set:
+		edit tag of the player to "&6[&e%{skGuilds::inGuild::%player%}%&6] &e"
+		stop
+on join:
+	set {skGuilds::Nick::%player%} to player
+	stop
+
+# Gods of players #
+
+command /Ntools:god [<player>]:
+	description: Ntools > Wlaczanie|Wylaczanie niesmiertelnosci.
+	executable by: players
+	aliases: god
+	trigger:
+		if player has permission "Ntools.god":
+			if arg 1 is not set:
+				if {Ntools::god::%player%} is true:
+					set {Ntools::god::%player%} to false
+					send "{@tag} &9Niesmiertelnosc: &cWYLACZONA&7."
+				else:
+					set {Ntools::god::%player%} to true
+					send "{@tag} &9Niesmiertelnosc: &aWLACZONA&7."
+			else:
+				if player has permission "Ntools.god.others":
+					if {Ntools::god::%arg 1%} is true:
+						set {Ntools::god::%arg 1%} to false
+						send "{@tag} &9Niesmiertelnosc gracza: &6%arg 1%&7: &cWYLACZONA&7."
+					else:
+						set {Ntools::god::%arg 1%} to true
+						send "{@tag} &9Niesmiertelnosc gracza: &6%arg 1%&7: &aWLACZONA&7."
+				else:
+					send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.Ntools.god.others)"
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.god)"
+
+# kolejne dodatki #
+
+command /Ntools:repair [<text="brak">]:
+	description: Ntools » Naprawianie wytrzymalosci przedmiotow.
+	executable by: players
+	aliases: repair, fix
+	trigger:
+		if player has permission "Ntools.repair":
+			if arg 1 is not "hand" or "all":
+				send "{@tag}   &9> &7Uzyj: &6/repair <hand&7|&6all>"
+			if arg 1 is "hand":
+				repair player's tool
+				send "{@tag} &7Naprawiono: &6%player's tool%&7."
+			if arg 1 is "all":
+				repair all items in player's inventory
+				send "{@tag} &7Naprawiono: &6all&7."
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.repair)"
+command /Ntools:head [<offlineplayer>]:
+	description: Ntools » Otrzymywanie glowy danego gracza.
+	executable by: players
+	aliases: head, skull
+	trigger:
+		if player has permission "Ntools.head":
+			if arg 1 is not set:
+				give player's skull to player
+				send "{@tag} &7Przywolano glowe gracza: &6%player%&7."
+			else:
+				give arg 1's skull to player
+				send "&{@tag} &7Przywolano glowe gracza: &6%arg 1%&7."
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.head)"
+
+			
+# time all commends #
+
+command /Ntools:czas [<text="brak">]:
+	description: Ntools » Ustawianie czasu na swiecie.
+	executable by: players
+	aliases: czas, NaciukanyTools:czas, Ntools:time
+	trigger:
+		if player has permission "Ntools.czas":
+			if arg 1 is not "day" or "night":
+				send "{@tag} &9Uzyj: &6/czas <day&7|&6night>"
+			if arg 1 is "night":
+				set world's time to 22:00
+				send "{@tag} &9Zmieniono czas na: &622:00&7."
+			if arg 1 is "day":
+				set world's time to 6:00
+				send "{@tag} &9Zmieniono czas na: &66:00&7."
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.czas)"
+
+# broadcast commands #
+
+command /Ntools:broadcast [<text>]:
+	description: Ntools » Ogloszenie.
+	executable by: players
+	aliases: broadcast, bc, say, Ntools:say
+	trigger:
+		if player has permission "Ntools.broadcast":
+			if arg 1 is not set:
+				send "{@tag} &7Uzyj: &6/broadcast <tekst>"
+			else:
+				broadcast "&7[ &6BROADCAST &7] &6%colored arg 1%"
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.broadcast)"
+			
+# tps or players #
+
+command /Ntools:tps:
+	description: Ntools » Liczba TPS serwera.
+	executable by: players
+	aliases: tps
+	trigger:
+		if player has permission "Ntools.tps":
+			send "&7-=-=-=-=-=-=-=-=-=-=-=-=-="
+			send ""
+			send "&f&lTPS: &a&l%tps%&f&l."
+			send ""
+			send "&7-=-=-=-=-=-=-=-=-=-=-=-=-="
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.tps)"
+			
+# speed commands ! #
+
+command /Ntools:speed [<integer>] [<player>]:
+	description: Ntools » Szybkosc latania|chodzenia.
+	executable by: players
+	aliases: speed, speedwalk, walkspeed, flyspeed
+	trigger:
+		if player has permission "Ntools.speed":
+			if arg 1 is not set:
+				send "{@tag} &7Uzyj: &6/speed <szybkosc> [gracz]"
+			else:
+				if arg 2 is not set:
+					if arg 1 is not 1:
+						set player's walk speed to arg 1
+						set player's fly speed to arg 1
+						send "{@tag} &7Ustawiono szybkosc gracza: &6%player% &7na: &6%arg 1%&7."
+					else:
+						reset player's walk speed
+						reset player's fly speed
+						send "{@tag} &7Ustawiono szybkosc gracza: &6%player% &7na: &6%arg 1%&7."
+				else:
+					if player has permission "Ntools.speed.others":
+						if arg 1 is not 1:
+							set arg 2's walk speed to arg 1
+							set arg 2's fly speed to arg 1
+							send "{@tag} &7Ustawiono szybkosc gracza: &6%arg 1% &7na: &6%arg 1%&7."
+						else:
+							reset arg 2's walk speed
+							reset arg 2's fly speed
+							send "{@tag} &7Ustawiono szybkosc gracza: &6%arg 1% &7na: &6%arg 1%&7."
+					else:
+						send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.speed.others)"
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.speed)"
+
+# warps commands #
+
+command /Ntools:delwarp [<text>]:
+	description: Ntool » Usuwanie warpu.
+	executable by: players
+	aliases: delwarp, deletewarp, remwarp, removewarp
+	trigger:
+		if player has permission "Ntool.delwarp":
+			if arg 1 is not set:
+				send "{@tag} &7Uzyj: &6/delwarp <tekst>"
+			else:
+				if {Ntool::warp::%arg 1%} is set:
+					delete {Ntool::warp::%arg 1%}
+					remove arg 1 from {Ntool::warps::*}
+					send "{@tag} &7Usunieto warp: &6%arg 1%&7."
+				else:
+					send "{@tag} &7Nie znaleziono takiego warpa."
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.delwarp)"
+command /Ntool:setwarp [<text>]:
+	description: Ntool » Ustawianie warpu.
+	executable by: players
+	aliases: setwarp, createwarp, crewarp
+	trigger:
+		if player has permission "Ntool.setwarp":
+			if arg 1 is not set:
+				send "{@tag} &7Uzyj: &6/setwarp <tekst>"
+			else:
+				set {Ntool::warp::%arg 1%} to location of player
+				remove arg 1 from {Ntool::warps::*}
+				add arg 1 to {Ntool::warps::*}
+				send "{@tag} &7Ustawiono warp: &6%arg 1%&7."
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.setwarp)"
+command /Ntool:warp [<text>]: 
+	description: Ntool» Teleportacja do warpu.
+	executable by: players
+	aliases: warp
+	trigger:
+		if player has permission "Ntool.warp":
+			if arg 1 is set:
+				if {Ntool::warp::%arg 1%} is set:
+					if player doesn't have permission "Ntool.warp.exempt":
+						set {_} to single value "numbers.teleport" get of "plugins/Ntools/warpy.yml"
+						set {_x.%player%} to x-location of player
+						set {_z.%player%} to z-location of player
+						set {_y.%player%} to y-location of player
+						send "&{@tag} &7Teleportacja do na warp &6%arg 1% &7za &6%{_}% sek&7. Nie mozesz sie ruszac."
+						loop {_} times:
+							if difference between x-location of player and {_x.%player%} is bigger than 0.5:
+								send "{@tag} &7Ruszyles sie, teleportacja zostala przerwana."
+								stop
+							if difference between z-location of player and {_z.%player%} is bigger than 0.5:
+								send "{@tag} &7Ruszyles sie, teleportacja zostala przerwana."
+								stop
+							if difference between y-location of player and {_y.%player%} is bigger than 0.5:
+								send "{@tag} &7Ruszyles sie, teleportacja zostala przerwana."
+								stop
+							remove 1 from {_}
+							if {_} is 0:
+								teleport player to {Ntool::warp::%arg 1%}
+								send "{@tag} &7Zostales przeniesiony do warpu: &6%arg 1%&7."
+								stop
+							wait 1 second
+						stop
+					else:
+						teleport player to {Ntool::warp::%arg 1%}
+						send "{@tag} &7Zostales przeniesiony do warpu: &6%arg 1%&7."
+				else:
+					send "{@tag} &7Warp: &6%arg 1% &7nie zostal ustawiony."
+			else:
+				send "{@tag} &7Uzyj: &6/warp <tekst>"
+				if player has permission "Ntool.warp.list":
+					if {Ntool::warps::*} is set:
+						send "{@tag} &7Warpy: &a%{Ntool::warps::*}%"
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.warp)"
+
+# mobs off strzelanie xD #
+
+command /Ntools:strzelaj [<entity type>]:
+	description: Ntools » Strzelanie mobami.
+	executable by: players
+	aliases: strzelaj, shoot, shot
+	trigger:
+		if player has permission "nBase.strzelanie":
+			if arg 1 is not set:
+				send "{@tag} &7Uzyj: &6/strzelaj <mob>"
+			else:
+				shoot arg-1 at speed 5.1
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.strzelanie)"
+			
+# Ladowanie Najnowszej Wersji #
 
 on script load:
 	set {_} to result of connect to "https://raw.githubusercontent.com/Naciukany/Ntools/master/Wersja"
-	if {_} is not "1.1":
-		send "&7[&anBase&7]   &9» &7Wykryto, ze obecna wersja nie jest najnowsza." to console
-		send "&7[&anBase&7]   &9» &7Pobieranie..." to console
+	if {_} is not "0.1":
+		send "Ntools &7Wykryto, ze obecna wersja nie jest najnowsza." to console
+		send "Ntools &7Pobieranie..." to console
 		delete folder "plugins/Ntools"
 		delete file "plugins/Skript/scripts/Ntools.sk"
 		wait 10 ticks
 		download from "https://raw.githubusercontent.com/Naciukany/Ntools/master/Skrypt" to "plugins/Skript/scripts/Ntools.sk"
 		wait 10 ticks
 		execute console command "sk reload all"
-		send "&7[&anBase&7]   &9» &7Najnowsza wersja skryptu zostala pobrana." to console
-		send "&7[&anBase&7]   &9» &7Zyczymy milego uzytkowania." to console
+		send "Ntools &7Najnowsza wersja skryptu zostala pobrana." to console
+		send "Ntools &7Zyczymy milego uzytkowania." to console
 	if folder "plugins/Ntools" doesn't exists:
 		create folder "plugins/Ntools"
