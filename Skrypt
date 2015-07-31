@@ -1,7 +1,7 @@
 #                                  #
 # Nazwa: Ntools (NaciukanyTools)   #
 # Autor: Naciukany ,               #
-# Wersja: 0.1v                     #
+# Wersja: 0.2v                     #
 #                                  #
 
 # Ustawienia Dropu ! #
@@ -844,7 +844,7 @@ every 60 real seconds:
         set {auto.spam} to 3
         stop
     {auto.spam} is 3:
-        broadcast "{@tag} &7Wiadomosc przykladowa 1"
+        broadcast "{@tag} &7Serwer Uzywa Ntools 0.2 by naciukany"
         set {auto.spam} to 4
         stop
     {auto.spam} is 4:
@@ -2568,7 +2568,7 @@ command /Ntools:strzelaj [<entity type>]:
 
 on script load:
 	set {_} to result of connect to "https://raw.githubusercontent.com/Naciukany/Ntools/master/Wersja"
-	if {_} is not "0.1":
+	if {_} is not "0.2":
 		send "Ntools &7Wykryto, ze obecna wersja nie jest najnowsza." to console
 		send "Ntools &7Pobieranie..." to console
 		delete folder "plugins/Ntools"
@@ -2581,3 +2581,297 @@ on script load:
 		send "Ntools &7Zyczymy milego uzytkowania." to console
 	if folder "plugins/Ntools" doesn't exists:
 		create folder "plugins/Ntools"
+# Logowanie #
+
+aliases:
+        nomove = 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16, 17, 18, 21, 24, 35, 44, 45, 49, 60, 56, 73, 78, 79, 80, 81, 82, 83, 86, 87, 88, 89, 99, 100, 103, 106, 110, 112, 114, 121, 127, 129, 153, 159, 161, 162, 162, 172, 174
+on load:
+        set {Logowanie.msg::no-pass} to "{@tag} &cPodaj haslo!"
+        set {Logowanie.msg::not-match} to "{@tag} &cHasla sie nie zgadzaja!"
+        set {Logowanie.msg::already-registered} to "{@tag} &cJestes juz zarejestrowany.."
+        set {Logowanie.msg::registered} to "{@tag} &2Zarejestrowano pomyslnie!"
+        set {Logowanie.msg::already-logged} to "{@tag} &cJuz jestes zalogowany.."
+        set {Logowanie.msg::bad-pass} to "{@tag} &cZle haslo!"
+        set {Logowanie.msg::not-registered} to "{@tag} &cZarejestruj sie!"
+        set {Logowanie.msg::login} to "{@tag} &aZalogowano pomyslnie!"
+        set {Logowanie.msg::nopermission} to "{@tag} &cNie masz dostepu do tej komendy!"
+ 
+ 
+#Ustawienia#
+        clear {Logowanie.allowsymbol::*}
+        add "1" to {Logowanie.allowsymbol::*}
+        add "0" to {Logowanie.allowsymbol::*}
+        add "2" to {Logowanie.allowsymbol::*}
+        add "3" to {Logowanie.allowsymbol::*}
+        add "4" to {Logowanie.allowsymbol::*}
+        add "5" to {Logowanie.allowsymbol::*}
+        add "6" to {Logowanie.allowsymbol::*}
+        add "7" to {Logowanie.allowsymbol::*}
+        add "8" to {Logowanie.allowsymbol::*}
+        add "9" to {Logowanie.allowsymbol::*}
+        add "j" to {Logowanie.allowsymbol::*}
+        add "q" to {Logowanie.allowsymbol::*}
+        add "w" to {Logowanie.allowsymbol::*}
+        add "e" to {Logowanie.allowsymbol::*}
+        add "r" to {Logowanie.allowsymbol::*}
+        add "t" to {Logowanie.allowsymbol::*}
+        add "y" to {Logowanie.allowsymbol::*}
+        add "u" to {Logowanie.allowsymbol::*}
+        add "i" to {Logowanie.allowsymbol::*}
+        add "o" to {Logowanie.allowsymbol::*}
+        add "p" to {Logowanie.allowsymbol::*}
+        add "a" to {Logowanie.allowsymbol::*}
+        add "s" to {Logowanie.allowsymbol::*}
+        add "d" to {Logowanie.allowsymbol::*}
+        add "f" to {Logowanie.allowsymbol::*}
+        add "g" to {Logowanie.allowsymbol::*}
+        add "h" to {Logowanie.allowsymbol::*}
+        add "j" to {Logowanie.allowsymbol::*}
+        add "k" to {Logowanie.allowsymbol::*}
+        add "l" to {Logowanie.allowsymbol::*}
+        add "z" to {Logowanie.allowsymbol::*}
+        add "x" to {Logowanie.allowsymbol::*}
+        add "c" to {Logowanie.allowsymbol::*}
+        add "v" to {Logowanie.allowsymbol::*}
+        add "b" to {Logowanie.allowsymbol::*}
+        add "n" to {Logowanie.allowsymbol::*}
+        add "m" to {Logowanie.allowsymbol::*}
+        set {Logowanie.cfg::force-sg} to false
+        set {Logowanie.cfg::force-deop} to false
+        set {Logowanie.cfg::maxnicknamelength} to 15
+        set {Logowanie.badsymbol::1} to "?"
+        set {Logowanie.badsymbol::2} to "!"
+        clear {Logowanie.allowop::*}
+        set {Logowanie.allowop::pablusiekk} to true
+       
+       
+ 
+on join:
+        if {Logowanie.logged::%UUID of player%} is not set:
+                set {Logowanie.logged::%UUID of player%} to false
+        set {_nazwa} to "%player%"
+        if {Logowanie.data-registration::%UUID of player%} is not set:
+                loop {Logowanie.badsymbol::*}:
+                        if {_nazwa} contain "%loop-value%":
+                                kick the player due to "{@tag} &cNazwa zawiera nieprawidlowy symbol"
+                                wait 1 second
+                                ban the player because "{@tag} &cLogowanie z nieprawidlowym symbolem!"
+                                stop
+                set {_length} to length of {_nazwa}
+                if {_length} is greater than {Logowanie.cfg::maxnicknamelength}:
+                        kick the player due to "{@tag} Zbyt dluga nazwa"
+                        stop
+                loop {Logowanie.allowsymbol::*}:
+                        replace all loop-value with "" in {_name}
+ 
+                if length of {_name} is greater than or equal to 1:
+                        kick the player due to "{@tag} &cZly symbol w nicku"
+                        stop
+        if {Logowanie.name::%UUID of player%} is not set:
+                set {Logowanie.name::%UUID of player%} to {_nazwa}
+        if {Logowanie.uuid::%{_nazwa}%} is not set:
+                set {Logowanie.uuid::%{_nazwa}%} to UUID of player
+        if {Logowanie.name::%UUID of player%} is not {_nazwa}:
+                set {Logowanie.name::%UUID of player%} to {_nazwa}
+        set {Logowanie.player::%UUID of player%} to player
+       
+        if {Logowanie.session::%UUID of player%} is not set:
+                set {Logowanie.session::%UUID of player%} to true
+       
+ 
+        if {Logowanie.ip::%UUID of player%} is IP of player:
+                set {Logowanie.logged::%UUID of player%} to true
+                set {Logowanie.session::%UUID of player%} to false
+                set {Logowanie.lastlogin::%UUID of player%} to now
+                send "&aSesja logowania"
+                stop
+ 
+        set {Logowanie.session::%UUID of player%} to true
+        while {Logowanie.session::%UUID of player%} is true:
+                if {Logowanie.data-registration::%UUID of player%} is not set:
+                        send "{@tag} &c&lZarejestruj sie komenda &6/zarejestruj <haslo> <powtorzHaslo>"
+                        wait 5 second
+ 
+                if {Logowanie.data-registration::%UUID of player%} is set:
+                        if {Logowanie.logged::%UUID of player%} is false:
+                                send "{@tag} &2Zaloguj sie komenda &6/zaloguj <haslo>"
+                                wait 5 second
+ 
+ 
+on join:
+        execute player command "wyloguj"
+on quit:
+        set {Logowanie.logged::%UUID of player%} to false
+        set {Logowanie.gamemode::%UUID of player%} to gamemode of player
+ 
+ 
+command /zaloguj [<text>]:
+        aliases: /login
+        trigger:
+                if {Logowanie.data-registration::%UUID of player%} is not set:
+                        send "{@tag} &cNie jestes zarejestrowany!"
+                        stop
+                if {Logowanie.logged::%UUID of player%} is true:
+                        send {Logowanie.msg::already-logged}
+                        stop
+                if arg 1 is not set:
+                        send {Logowanie.msg::no-pass}
+                        stop
+                if hashed arg 1 is not {Logowanie.password::%UUID of player%}:
+                        send {Logowanie.msg::bad-pass}
+                        stop
+                set {Logowanie.logged::%UUID of player%} to true
+                set {Logowanie.ip::%UUID of player%} to IP of player
+                set {Logowanie.session::%UUID of player%} to false
+                set {Logowanie.lastlogin::%UUID of player%} to now
+                create timed boss bar with text "{@tag} &aPomyslnie zalogowano!" to player for 10 seconds
+                execute console command "effect %player% clear"
+                send "{@tag} &aPomyslnie zalogowano!"
+                disallow fly to player
+                teleport player to {loc.%player%}
+                stop
+ 
+command /zarejestruj [<text>] [<text>]:
+        aliases: /register
+        trigger:
+                if {Logowanie.data-registration::%UUID of player%} is set:
+                        send {Logowanie.msg::already-registered}
+                        stop
+                if arg 1 is not set:
+                        send {Logowanie.msg::no-pass}
+                        stop
+                if arg 2 is not set:
+                        send {Logowanie.msg::no-pass}
+                        stop
+                set {_pass-1} to arg 1
+                set {_pass-2} to arg 2
+                if {_pass-1} is not {_pass-2}:
+                        send {Logowanie.msg::not-match}
+                        stop
+                set {Logowanie.data-registration::%UUID of player%} to now
+                set {Logowanie.password::%UUID of player%} to hashed arg 1
+                set {Logowanie.ip::%UUID of player%} to IP of player
+                set {Logowanie.logged::%UUID of player%} to true
+                set {Logowanie.session::%UUID of player%} to false
+                set {Logowanie.lastlogin::%UUID of player%} to now
+                create timed boss bar with text "{@tag} &6Zarejestrowales sie na naszym serwerze!" to player for 10 seconds
+               
+command /odrejestruj [<text>]:
+        aliases: r
+        trigger:
+                if arg 1 is not set:
+                        send {Logowanie.msg::no-pass}
+                        stop
+                set {_pass-1} to arg 1
+                delete {Logowanie.data-registration::%UUID of player%}
+                delete {Logowanie.password::%UUID of player%}
+                delete {Logowanie.ip::%UUID of player%}
+                delete {Logowanie.logged::%UUID of player%}
+                delete {Logowanie.session::%UUID of player%}
+                delete {Logowanie.lastlogin::%UUID of player%}
+                create timed boss bar with text "{@tag} &4Odrejestrowales sie :(" to player for 10 seconds
+                wait 2 seconds
+                kick the player due to "{@tag} &4Wykopano! Admin: PabluSiekSilnikV3 Powod: Odrejestrowano"
+ 
+ 
+command /wyloguj:
+        trigger:
+                if player doesn't have permission "Logowanie.vip":
+                        send {Logowanie.msg::nopermission}
+                        stop
+                set {Logowanie.logged::%UUID of player%} to false
+                set {Logowanie.session::%UUID of player%} to true
+                set {posx::%UUID of player%} to x-location of player
+                set {posy::%UUID of player%} to y-location of player
+                set {posz::%UUID of player%} to z-location of player
+                create timed boss bar with text "&7[&6MyLogin&7] &cPomyslnie wylogowano z serwera!" to player for 10 seconds
+                apply invisibility 5 to player for 999999 seconds
+                send "{@tag} &6Wylogowales sie, jestes nie widzialny! Wpisz /zaloguj <haslo> aby sie zalogowac :)"
+                allow fly to player
+                set {loc.%player%} to location of player
+on command:
+        if {Logowanie.logged::%UUID of player%} is false:
+                if command is not "login" or "register" or "l" or "r" or "zaloguj" or "zarejestruj":
+                        cancel event
+ 
+on pick up:
+        if {Logowanie.logged::%UUID of player%} is false:
+                cancel event
+ 
+on rightclick:
+        if {Logowanie.logged::%UUID of player%} is false:
+                cancel event
+ 
+on leftclick:
+        if {Logowanie.logged::%UUID of player%} is false:
+                cancel event
+ 
+on place:
+        if {Logowanie.logged::%UUID of player%} is false:
+                cancel event
+ 
+on drop:
+        if {Logowanie.logged::%UUID of player%} is false:
+                cancel event
+on chat:
+        if {Logowanie.logged::%UUID of player%} is false:
+                cancel event
+ 
+on block damage:
+        if {Logowanie.logged::%UUID of player%} is false:
+                cancel event
+ 
+on teleport:
+        if {Logowanie.logged::%UUID of player%} is false:
+                cancel event
+ 
+on damage:
+        if {Logowanie.logged::%UUID of attacker%} is false:
+                cancel event
+        if {Logowanie.logged::%UUID of victim%} is false:
+                cancel event
+ 
+ 
+command /Logowanie [<text>] [<text>]:
+        trigger:
+                if player doesn't have permission "Logowanie.Admin":
+                        send {Logowanie.msg::nopermission}
+                        stop
+                if arg 1 is not set:
+                        loop {Logowanie.uuid::*}:
+                                send "%loop-index% %loop-value%"
+                if arg 1 is "users":
+                        send "&2Lista Użytkowników"
+                        loop {Logowanie.password::*}:
+                                set {_nazwa} to "%{Logowanie.name::%loop-index%}%"
+                                send {_nazwa}
+                        stop
+                if arg 1 is "setspawn":
+                        set {Logowanie.cfg::spawn} to location of player
+                        send "{@tag} &2Spawn zostal ustawiony !"
+                        stop
+                if arg 1 is "info":
+                        set {_nazwa} to arg 2
+                        if {Logowanie.uuid::%{_nazwa}%} is not set:
+                                send "{@tag} &4&LNie znaleziono gracza"
+                                stop
+                        set {_uuid} to {Logowanie.uuid::%{_nazwa}%}
+                        send "&2Nazwa: &f%{_nazwa}%"
+                        send "&2Data rejestracji: &f%{Logowanie.data-registration::%{_uuid}%}%"
+                        send "&2IP: &f%{Logowanie.ip::%{_uuid}%}%"
+                        send "&2Ostatnie logowanie: &f%{Logowanie.lastlogin::%{_uuid}%}%"
+                if arg 1 is "clear":
+                        delete {Logowanie.lastlogin::*}
+                        delete {Logowanie.ip::*}
+                        delete {Logowanie.data-registration::*}
+                        delete {Logowanie.uuid::*}
+                        delete {Logowanie.password::*}
+                        delete {Logowanie.logged::*}
+                        delete {posx::*}
+                        delete {posy::*}
+                        delete {posz::*}
+                        delete {Logowanie.session::*}
+                        delete {Logowanie.player::*}
+                        delete {Logowanie.name::*}
+                        send "Usunięto"
+                        stop
