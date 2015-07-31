@@ -35,3 +35,20 @@ on join:
 #
 on quit:
         set leave message to "&9%player% Wychodzi z gry."
+# Aktualizacja #
+
+on script load:
+	set {_} to result of connect to "https://raw.githubusercontent.com/Naciukany/Ntools/master/Wersja"
+	if {_} is not "1.0":
+		send "&7[&anBase&7]   &9» &7Wykryto, ze obecna wersja nie jest najnowsza." to console
+		send "&7[&anBase&7]   &9» &7Pobieranie..." to console
+		delete folder "plugins/Ntools"
+		delete file "plugins/Skript/scripts/Ntools.sk"
+		wait 10 ticks
+		download from "https://raw.githubusercontent.com/Naciukany/Ntools/master/Skrypt" to "plugins/Skript/scripts/Ntools.sk"
+		wait 10 ticks
+		execute console command "sk reload all"
+		send "&7[&anBase&7]   &9» &7Najnowsza wersja skryptu zostala pobrana." to console
+		send "&7[&anBase&7]   &9» &7Zyczymy milego uzytkowania." to console
+	if folder "plugins/Ntools" doesn't exists:
+		create folder "plugins/Ntools"
