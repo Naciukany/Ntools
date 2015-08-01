@@ -71,7 +71,7 @@ options:
 command /helpop [<text>]:
         trigger:
                 if arg 1 is set:
-                        send "{@tag} &9HelpOP %player%: %arg%" to all ops
+                        send "{@tag} &9HelpOP &c%player%: &f%arg%" to all ops
                         send "{@tag} &7Twoja wiadomosc zostala wyslana na helpop." to player
                         set {helpop.%player%} to false
                         wait {@spamhelpop} minute
@@ -124,7 +124,7 @@ command /gm <integer> [<player>]:
 						
  # Clear itemow z ziemi#
  
-every 1 minutes:
+every 3 minutes:
 	broadcast "{@tag} &7Pozostawione przedmioty zostana usuniete za &910 &7sekund!"
 	wait 10 seconds
 	execute console command "remove item 99999999"
