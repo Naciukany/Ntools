@@ -1261,46 +1261,4 @@ on damage:
 			cancel event
 			delete {randomtp.god.%victim%}
 			stop
-# Hologramy #
 
-command /holo [<text>] [<text>]:
-        trigger:
-                if argument 1 is not set:
-                        send "&{@tag} cPrzyklad: /holo <lista|dodaj|usun> <nazwa>"
-                if argument 1 is "dodaj":
-                        if argument 2 is set:
-                                if {holo.%argument 2%} is not set:                                     
-                                        set {_loc} to location of target block
-                                        set {holo.%argument 2%} to "%{_loc}%"
-                                        new Hologram "%{_loc}%.holo";
-                                        "%{_loc}%.holo".Hologram.change{"%argument 2%"};
-                                        "%{_loc}%.holo".Hologram.show{{_loc}};
-                                        add argument 2 to {holo::*}
-                                        send "&aDodales hologram '%argument 2%'!"
-                                        stop
-                                else:
-                                        send "{@tag}&cTaki hologram jest juz ustawiony!"
-                        else:
-                                send "{@tag} &cPrzyklad: /holo <lista|dodaj|usun> <nazwa>"
-                if argument 1 is "usun":
-                        if argument 2 is set:
-                                if {holo.%argument 2%} is set:
-                                        set {_loc} to {holo.%argument 2%}
-                                        "%{_loc}%.holo".Hologram.delete{};
-                                        delete {holo.%argument 2%}
-                                        remove argument 2 from {holo::*}
-                                        send "&aUsunales hologram '%argument 2%'!"
-                                        stop
-                                else:
-                                        send "{@tag} &cTaki hologram nie istnieje!"
- 
-                        else:
-                                send "&{@tag} cPrzyklad: /holo <lista|dodaj|usun> <nazwa>"
-                if argument 1 is "lista":
-                        if argument 2 is not set:
-                                send "{@tag} &3Lista Hologramow:"
-                                loop {holo::*}:
-                                        send "&7%loop-index%. &f%loop-value%"
-                                stop
-                        else:
-                                send "{@tag} &cPrzyklad: /holo <lista|dodaj|usun> <nazwa>"
