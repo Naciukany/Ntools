@@ -1,7 +1,7 @@
 #                                  #
 # Nazwa: Ntools (NaciukanyTools)   #
 # Autor: Naciukany ,               #
-# Wersja: 0.1v                     #
+# Wersja: 2.1v                     #
 #                                  #
 
 # Ustawienia Dropu ! #
@@ -365,29 +365,8 @@ command /mute [<player>]:
 		else:
 			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.mute)"
 			stop
-command /fly [<player>]:
-	trigger:
-		if player has permission "Ntools.fly":
-			if {Ntools.%player%.fly} is false:
-				allow arg 1 to fly to 
-				set {Ntool.%player%.fly} to true
-				send "{@tag} &9Wlaczyles fly graczowi &c%arg 1%"
-				stop
-			if {Ntool.%player%.fly} is true:
-				disallow arg 1 to fly
-				set {Ntool.%player%.fly} to false
-				send "{@tag} &9Wylaczyles fly graczowi &c%arg 1%"
-				stop
-			if {Ntool.%player%.fly} is not set:
-				set {Ntool.%player%.fly} to false
-				send "{@tag} &9Wlaczono komende fly!"
-				stop
-			else:
-				send "{@tag} &9Podaj nick gracza"
-				stop
-		else:
-			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.fly)"
-			stop
+
+#
 command /unmute [<player>]:
 	trigger:
 		if player has permission "Ntools.unmute":
@@ -470,7 +449,7 @@ on connect:
     set {gracz::%player%} to now
 #Reload serwera#
 
-command /reload:
+command /sreload:
 	trigger:
 		send "{@tag} &cPrzeladowanie serwera za 5 sekund."
 		wait 5 second
@@ -609,7 +588,7 @@ on skript start:
 
 command /vanish [<text>]:
 	permission message: &4Blad: &cNie posiadasz uprawnienia &8(Ntools.vanish)
-	permission: Ntools.vanish"
+	permission: Ntools.vanish
 	trigger:
 		if {Vanish::%player%} is true:
 			send "{@tag}&f&lWylaczyles Niewidzialnosc."
@@ -620,7 +599,7 @@ command /vanish [<text>]:
 			set {Vanish::%player%} to true
 			send "{@tag} &f&lWlaczyles Niewidzialnosc."
 			loop all players:
-				if loop-player doesn't have permission "Ntools.vanish".see":
+				if loop-player doesn't have permission "Ntools.vanish.see":
 					hide player for loop-player
 			set tag of player to "&4[NieWidacGo] &f"
 on join:
@@ -1188,7 +1167,7 @@ command /Ntools:kickall [<text>]:
 
 on script load:
 	set {_} to result of connect to "https://raw.githubusercontent.com/Naciukany/Ntools/master/Wersja"
-	if {_} is not "0.1":
+	if {_} is not "2.1":
 		send "Ntools &7Wykryto, ze obecna wersja nie jest najnowsza." to console
 		send "Ntools &7Pobieranie..." to console
 		delete folder "plugins/Ntools"
@@ -1201,3 +1180,82 @@ on script load:
 		send "Ntools &7Zyczymy milego uzytkowania." to console
 	if folder "plugins/Ntools" doesn't exists:
 		create folder "plugins/Ntools"
+
+# swiniarka #
+
+Options:
+        Prefix: &6* &5&lN&ftools&a2 &6* #Tag skryptu
+        ClickBlock: stone button #Blok ktory trzeba kliknac, aby respily sie swinie
+        BlockBehind: redstone lamp #Blok za kliknietym blokiem
+        Wait: 5 #Co ile mozna uzywac przycisku
+        Name: &6* &5&lN&ftools&a2 &6* #Nazwa swini
+        Amount: 5 #Ilosc swin
+        AmountPork: 5 #Ilosc Miesa przy spawnie swin
+        LifePig: 1 #Zycie swin
+       
+ 
+Command /SpawnPig [<text>]:
+        aliases: sp, pig
+        trigger:
+                if player has permission "SpawnPig.*":
+                        if arg 1 is not set:
+                                send "{@Prefix}"
+                                send "&7/SpawnPig set"
+                                send "&7/SpawnPig del"
+                                send "&7/SpawnPig help"
+                                stop
+                        if arg 1 is "help" or "pomoc":
+                                send "{@Prefix}"
+                                send "&7/SpawnPig set"
+                                send "&7/SpawnPig del"
+                                stop
+                        if arg 1 is "set" or "ustaw":
+                                set {SpawnPig} to location of player
+                                send "{@Prefix} &7Stworzono spawn swin."
+                                stop
+                        if arg 1 is "del" or "usun":
+                                clear {SpawnPig}
+                                send "{@Prefix} &7Usunieto spawn swin."
+                                stop
+                else:
+                        send "&cBrak uprawnien"
+                        stop
+ 
+on rightclick:
+        if clicked block is {@ClickBlock}:
+                if block behind clicked block is {@BlockBehind}:
+                        if difference between {PigWait.%player%} and now is less than {@Wait} seconds:
+                                set {_Time} to difference between {PigWait.%player%} and now
+                                stop
+                        set {PigWait.%player%} to now
+                        drop {@AmountPork} cooked pork at {SpawnPig}
+                        loop {@Amount} times:
+                                spawn 1 pig at {SpawnPig}
+                                ignite spawned pig
+                                set display name of spawned pig to "{@Name}"
+                                set max health of spawned pigs to {@LifePig}
+# randomtp #
+
+
+options:
+	x-min: -3000
+	x-max: 3000
+	z-min: -3000
+	z-max: 3000
+on right click:
+	if clicked block is stone button:
+		if block behind clicked block is sponge:
+			set {_x} to random integer between {@x-min} and {@x-max}
+			set {_y} to 256
+			set {_z} to random integer between {@z-min} and {@z-max}
+			set {_location} to location at {_x}, {_y}, {_z}
+			set {randomtp.god.%player%} to true
+			teleport player to {_location}
+			send "{@tag} &7Przeteleportowano w losowe koordynaty &6(x: %{_x}% | z: %{_z}%)&7."
+			stop
+on damage:
+	if victim is player:
+		if {randomtp.god.%victim%} is true:
+			cancel event
+			delete {randomtp.god.%victim%}
+			stop
