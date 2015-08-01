@@ -1,12 +1,12 @@
 #                                  #
 # Nazwa: Ntools (NaciukanyTools)   #
 # Autor: Naciukany ,               #
-# Wersja: 2.1v                     #
+# Wersja: 2.1Av                     #
 #                                  #
 
 # Ustawienia Dropu ! #
 options:
-	tag: &6| &7&lNtools &6| 
+	tag: &6* &5&lN&ftools&a2 &6*
 	diamenty: 2.5
 	zloto: 2.5
 	zelazo: 6
@@ -30,6 +30,8 @@ on join:
 		send "&7-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
 		send ""
 		send "&c* &9Witaj: &6%player%"
+		send ""
+		send "&c* &9Online: &6%number of all players%"
 		send ""
 		send "&7-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
 #
@@ -576,12 +578,12 @@ on skript start:
         send "" to the console
         send "&8--------------------------------------------------------------" to the console
         send "&8|                                                            |" to the console
-        send "&8|                  Enable &9Ntools                           |" to the console
+        send "&8|                  Odpalono &9Ntools                         |" to the console
         send "&8|                                                            |" to the console
         send "&8--------------------------------------------------------------" to the console
         send "" to the console
         send "&8Autor: &aNaciukany" to the console
-        send "&8Version: &71" to the console
+        send "&8Najnowsza" to the console
         send "" to the console
 		
 # vanish #
@@ -815,23 +817,23 @@ every 60 real seconds:
         set {auto.spam} to 1
         stop
     {auto.spam} is 1:
-        broadcast "{@tag} &7&a&lDziekuje za uzywanie &6&LNtools! :D"
+        broadcast "{@tag} &7Serwer posiada &6Ntools&a2 &7by &9Naciukany"
         set {auto.spam} to 2
         stop
     {auto.spam} is 2:
-        broadcast "{@tag} Masz propozycje? Wbijaj na &bskype: &7kacper.dawid2"
+        broadcast "{@tag} &7Komendy Ntools pod &c/Ntools"
         set {auto.spam} to 3
         stop
     {auto.spam} is 3:
-        broadcast "{@tag} &7Wiadomosc przykladowa 1"
+        broadcast "{@tag} &7Strzelaj mobami &6/strzelaj &c<mob>"
         set {auto.spam} to 4
         stop
     {auto.spam} is 4:
-        broadcast "{@tag} &7Wiadomosc przykladowa 2"
+        broadcast "{@tag} &7Wersja Ntools to: &c0.2A"
         set {auto.spam} to 5
         stop
     {auto.spam} is 5:
-        broadcast "{@tag} &7Wiadomosc przykladowa 3"
+        broadcast "{@tag} &7Wprowadzilismy Anty skrypty teraz bic mozna max z 4 kratek."
         set {auto.spam} to 1
         stop
 
@@ -853,7 +855,7 @@ command /Ntools:
 		send "&6/sun /rain &7- Zmiana pogody."
 		send "&6/tp /tpall &7- Komendy Teleportacji."
 		send "&6/afk &7- Oznajmiasz ze nie ma cie przy komputerze."
-		send "&6/fly &7- Komenda latania."
+		send "&6/pig &7- ustawienia swiniarki."
 		send "&6/mute /unmute &7- Wyciszanie i odciszanie gracza."
 		send "&6/heal &c<grazcz> &6/feed &c<gracz> &7- Karmienie oraz leczenie."
 		send "&6/hat &c<blok> &7- Zakladasz blok na glowe."
@@ -1167,7 +1169,7 @@ command /Ntools:kickall [<text>]:
 
 on script load:
 	set {_} to result of connect to "https://raw.githubusercontent.com/Naciukany/Ntools/master/Wersja"
-	if {_} is not "2.1":
+	if {_} is not "2.1A":
 		send "Ntools &7Wykryto, ze obecna wersja nie jest najnowsza." to console
 		send "Ntools &7Pobieranie..." to console
 		delete folder "plugins/Ntools"
