@@ -1,12 +1,12 @@
 #                                  #
 # Nazwa: Ntools (NaciukanyTools)   #
 # Autor: Naciukany ,               #
-# Wersja: 2.1Av                     #
+# Wersja: 0.1v                     #
 #                                  #
 
 # Ustawienia Dropu ! #
 options:
-	tag: &6* &5&lN&ftools&a2 &6*
+	tag: &6* &5&lN&ftools &6*
 	diamenty: 2.5
 	zloto: 2.5
 	zelazo: 6
@@ -1169,7 +1169,7 @@ command /Ntools:kickall [<text>]:
 
 on script load:
 	set {_} to result of connect to "https://raw.githubusercontent.com/Naciukany/Ntools/master/Wersja"
-	if {_} is not "2.1A":
+	if {_} is not "0.1":
 		send "Ntools &7Wykryto, ze obecna wersja nie jest najnowsza." to console
 		send "Ntools &7Pobieranie..." to console
 		delete folder "plugins/Ntools"
@@ -1262,194 +1262,4 @@ on damage:
 			delete {randomtp.god.%victim%}
 			stop
 # TAB <3 #
-
-options:
-	slot.1: &2&l>>>>>>>>>>>>>>>>
-	slot.4: &a&l>>>>>>>>>>>>>>>
-	slot.7: &1
-	slot.10: &eKOMENDY
-	slot.13: &c/pomoc &6- pomoc
-	slot.16: &2
-	slot.19: &c/topka <num> &6- top pkt
-	slot.22: &3
-	slot.25: &c/regulamin &6- zasady serwera
-	slot.28: &4
-	slot.31: &c/administracja &6- ekipa
-	slot.34: &5
-	slot.37: &c/statystyki &6- statystyki
-	slot.40: &6
-	slot.43: &7
-	slot.46: &8
-	slot.49: &9
-	slot.52: 1&a
-	slot.55: &b
-	slot.58: &c
-	
-	slot.2: &a&l================
-	slot.5: &2&lSerwer
-	slot.8: &d
-	slot.11: &eSTATYSTYKI SERWERA
-	slot.14: &6Ilość odwiedzin
-	slot.17: &c%{ilosc.wejscw.sumie}%
-	slot.20: &e
-	slot.23: &6Data i godzina
-	slot.26: &c%{_data}% %{_godzina}%
-	slot.29: &f
-	slot.32: &6Online
-	slot.35: &c%number of all players%&6/&c1000
-	slot.38: &8&4
-	slot.41: &5&3
-	slot.44: &a&4
-	slot.47: &2 &5
-	slot.50: &5 &6
-	slot.53: &4 &5
-	slot.56: &2 &6
-	slot.59: &5 &3
-
-	slot.3: &2&l<<<<<<<<<<<<<<<<
-	slot.6: &a&l<<<<<<<<<<<<<<<
-	slot.9: &6&9
-	slot.12: &eTWOJE STATYSTYKI
-	slot.15: &6Ilość twoich wejść
-	slot.18: &c%{ilosc.wejsc.%player%}%
-	slot.21: &6&1
-	slot.24: &6Zabicia
-	slot.27: &c%{zabojstwa.%player%}%
-	slot.30: &b&9
-	slot.33: &6Zgony
-	slot.36: &c%{smierci.%player%}%
-	slot.39: &d&8
-	slot.42: &6Punkty
-	slot.45: &c%{punkty::%player%}%
-	slot.48: &d &8
-	slot.51: &d  &8
-	slot.54: &d   &8
-	slot.57: &d    &8
-	slot.60: &d     &8
-
-
-on join:
-	set {_godzina} to text from url "http://papug.tk/skript/gm.php"
-	set {_data} to text from url "http://papug.tk/skript/data.php"
-	set {slot.1} to "{@slot.1}"
-	set {slot.2} to "{@slot.2}"
-	set {slot.3} to "{@slot.3}"
-	set {slot.4} to "{@slot.4}"
-	set {slot.5} to "{@slot.5}"
-	set {slot.6} to "{@slot.6}"
-	set {slot.7} to "{@slot.7}"
-	set {slot.8} to "{@slot.8}"
-	set {slot.9} to "{@slot.9}"
-	set {slot.10} to "{@slot.10}"
-	set {slot.11} to "{@slot.11}"
-	set {slot.12} to "{@slot.12}"
-	set {slot.13} to "{@slot.13}"
-	set {slot.14} to "{@slot.14}"
-	set {slot.15} to "{@slot.15}"
-	set {slot.16} to "{@slot.16}"
-	set {slot.17} to "{@slot.17}"
-	set {slot.18} to "{@slot.18}"
-	set {slot.19} to "{@slot.19}"
-	set {slot.20} to "{@slot.20}"
-	set {slot.21} to "{@slot.21}"
-	set {slot.22} to "{@slot.22}"
-	set {slot.23} to "{@slot.23}"
-	set {slot.24} to "{@slot.24}"
-	set {slot.25} to "{@slot.25}"
-	set {slot.26} to "{@slot.26}"
-	set {slot.27} to "{@slot.27}"
-	set {slot.28} to "{@slot.28}"
-	set {slot.29} to "{@slot.29}"
-	set {slot.30} to "{@slot.30}"
-	set {slot.31} to "{@slot.31}"
-	set {slot.32} to "{@slot.32}"
-	set {slot.33} to "{@slot.33}"
-	set {slot.34} to "{@slot.34}"
-	set {slot.35} to "{@slot.35}"
-	set {slot.36} to "{@slot.36}"
-	set {slot.37} to "{@slot.37}"
-	set {slot.38} to "{@slot.38}"
-	set {slot.39} to "{@slot.39}"
-	set {slot.40} to "{@slot.40}"
-	set {slot.41} to "{@slot.41}"
-	set {slot.42} to "{@slot.42}"
-	set {slot.43} to "{@slot.43}"
-	set {slot.44} to "{@slot.44}"
-	set {slot.45} to "{@slot.45}"
-	set {slot.46} to "{@slot.46}"
-	set {slot.47} to "{@slot.47}"
-	set {slot.48} to "{@slot.48}"
-	set {slot.49} to "{@slot.49}"
-	set {slot.50} to "{@slot.50}"
-	set {slot.51} to "{@slot.51}"
-	set {slot.52} to "{@slot.52}"
-	set {slot.53} to "{@slot.53}"
-	set {slot.54} to "{@slot.54}"
-	set {slot.55} to "{@slot.55}"
-	set {slot.56} to "{@slot.56}"
-	set {slot.57} to "{@slot.57}"
-	set {slot.58} to "{@slot.58}"
-	set {slot.59} to "{@slot.59}"
-	set {slot.60} to "{@slot.60}"
-	set {_Tab} to "tag2"
-	"{_Tab}".Tab.set{1, "%{slot.1}%"};
-	"{_Tab}".Tab.set{2, "%{slot.2}%"};
-	"{_Tab}".Tab.set{3, "%{slot.3}%"};
-	"{_Tab}".Tab.set{4, "%{slot.4}%"};
-	"{_Tab}".Tab.set{5, "%{slot.5}%"};
-	"{_Tab}".Tab.set{6, "%{slot.6}%"};
-	"{_Tab}".Tab.set{7, "%{slot.7}%"};
-	"{_Tab}".Tab.set{8, "%{slot.8}%"};
-	"{_Tab}".Tab.set{9, "%{slot.9}%"};
-	"{_Tab}".Tab.set{10, "%{slot.10}%"};
-	"{_Tab}".Tab.set{11, "%{slot.11}%"};
-	"{_Tab}".Tab.set{12, "%{slot.12}%"};
-	"{_Tab}".Tab.set{13, "%{slot.13}%"};
-	"{_Tab}".Tab.set{14, "%{slot.14}%"};
-	"{_Tab}".Tab.set{15, "%{slot.15}%"};
-	"{_Tab}".Tab.set{16, "%{slot.16}%"};
-	"{_Tab}".Tab.set{17, "%{slot.17}%"};
-	"{_Tab}".Tab.set{18, "%{slot.18}%"};
-	"{_Tab}".Tab.set{19, "%{slot.19}%"};
-	"{_Tab}".Tab.set{20, "%{slot.20}%"};
-	"{_Tab}".Tab.set{21, "%{slot.21}%"};
-	"{_Tab}".Tab.set{22, "%{slot.22}%"};
-	"{_Tab}".Tab.set{23, "%{slot.23}%"};
-	"{_Tab}".Tab.set{24, "%{slot.24}%"};
-	"{_Tab}".Tab.set{25, "%{slot.25}%"};
-	"{_Tab}".Tab.set{26, "%{slot.26}%"};
-	"{_Tab}".Tab.set{27, "%{slot.27}%"};
-	"{_Tab}".Tab.set{28, "%{slot.28}%"};
-	"{_Tab}".Tab.set{29, "%{slot.29}%"};
-	"{_Tab}".Tab.set{30, "%{slot.30}%"};
-	"{_Tab}".Tab.set{31, "%{slot.31}%"};
-	"{_Tab}".Tab.set{32, "%{slot.32}%"};
-	"{_Tab}".Tab.set{33, "%{slot.33}%"};
-	"{_Tab}".Tab.set{34, "%{slot.34}%"};
-	"{_Tab}".Tab.set{35, "%{slot.35}%"};
-	"{_Tab}".Tab.set{36, "%{slot.36}%"};
-	"{_Tab}".Tab.set{37, "%{slot.37}%"};
-	"{_Tab}".Tab.set{38, "%{slot.38}%"};
-	"{_Tab}".Tab.set{39, "%{slot.39}%"};
-	"{_Tab}".Tab.set{40, "%{slot.40}%"};
-	"{_Tab}".Tab.set{41, "%{slot.41}%"};
-	"{_Tab}".Tab.set{42, "%{slot.42}%"};
-	"{_Tab}".Tab.set{43, "%{slot.43}%"};
-	"{_Tab}".Tab.set{44, "%{slot.44}%"};
-	"{_Tab}".Tab.set{45, "%{slot.45}%"};
-	"{_Tab}".Tab.set{46, "%{slot.46}%"};
-	"{_Tab}".Tab.set{47, "%{slot.47}%"};
-	"{_Tab}".Tab.set{48, "%{slot.48}%"};
-	"{_Tab}".Tab.set{49, "%{slot.49}%"};
-	"{_Tab}".Tab.set{50, "%{slot.50}%"};
-	"{_Tab}".Tab.set{51, "%{slot.51}%"};
-	"{_Tab}".Tab.set{52, "%{slot.52}%"};
-	"{_Tab}".Tab.set{53, "%{slot.53}%"};
-	"{_Tab}".Tab.set{54, "%{slot.54}%"};
-	"{_Tab}".Tab.set{55, "%{slot.55}%"};
-	"{_Tab}".Tab.set{56, "%{slot.56}%"};
-	"{_Tab}".Tab.set{57, "%{slot.57}%"};
-	"{_Tab}".Tab.set{58, "%{slot.58}%"};
-	"{_Tab}".Tab.set{59, "%{slot.59}%"};
-	"{_Tab}".Tab.set{60, "%{slot.60}%"};
-	"{_Tab}".Tab.send{player};
+Niedlugo...
