@@ -1,9 +1,17 @@
 #                                  #
 # Nazwa: Ntools (NaciukanyTools)   #
 # Autor: Naciukany ,               #
-# Wersja: 0.1v                     #
+# Wersja: 0.1av                    #
 #                                  #
 
+
+# Nie Dotykaj #
+
+variables:
+	{Ntools.%player%.ban} = false
+	{Ntools.%player%.banip} = false
+	
+	
 # Ustawienia Dropu ! #
 options:
 	tag: &6* &5&lN&ftools&a2 &6*
@@ -1169,7 +1177,7 @@ command /Ntools:kickall [<text>]:
 
 on script load:
 	set {_} to result of connect to "https://raw.githubusercontent.com/Naciukany/Ntools/master/Wersja"
-	if {_} is not "0.1":
+	if {_} is not "0.1a":
 		send "Ntools &7Wykryto, ze obecna wersja nie jest najnowsza." to console
 		send "Ntools &7Pobieranie..." to console
 		delete folder "plugins/Ntools"
@@ -1261,5 +1269,120 @@ on damage:
 			cancel event
 			delete {randomtp.god.%victim%}
 			stop
-# TAB <3 #
-Niedlugo...
+# Banowanie #
+
+command /ban [<player>] [<text>]:
+	trigger:
+		if arg 1 is set:
+			if arg 2 is set:
+				if player has permission "Ntools.ban":
+					if argument 1 has permission "Ntools.ban":
+						send "{@tag} &cNie mozesz zbanowac tego gracza!"
+						stop
+					else:                                       
+						if {Ntools.%arg 1%.ban} is false:
+							kick the argument 1 due to "%arg 2%"
+							set {Ntools.%arg 1%.ban} to true
+							ban argument 1
+							add "%arg 1%" to {Ntools.banlist::*}
+							broadcast "{@tag} &bGracz &c%arg 1% &bzostal zbanowany za &c%arg 2%"
+							stop
+						else:
+							send "{@tag} &cTen gracz jest juz banowany!"
+							stop
+				else:
+					send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.ban)"
+					stop
+			else:
+				send "{@tag} &cPodaj powod!"
+				stop
+		else:
+			send "{@tag} &cPodaj nick gracza!"
+			stop
+
+
+			
+command /banlist:
+	trigger:
+		if player has permission "Ntools.banlist":
+			if {Ntools.banlist::*} is not set:
+				send "{@tag} &cNie ma zadnych zbanowanych graczy!"
+				stop
+			else:
+				send "{@tag} &bLista graczy zbanowanych: &c%{Ntools.banlist::*}%"
+				stop
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.banlista)"
+			stop
+command /baniplist:
+	trigger:
+		if player has permission "Ntools.banlist":
+			if {Ntools.banlistip::*} is not set:
+				send "{@tag} &cNie ma zadnych zbanowanych ip!"
+				stop
+			else:
+				send "{@tag} &bLista zbanowanych ip: &c%{Ntools.banlistip::*}%"
+				stop
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.banlista)"
+			stop	
+
+command /banip [<player>] [<text>]:
+	trigger:
+		if arg 1 is set:
+			if arg 2 is set:
+				if player has permission "Ntools.ban":
+					if argument 1 has permission "Ntoolst.ban":
+						send "{@tag} &cNie mozesz zbanowac tego ip !"
+					else:                                       
+						if {Ntools.%arg 1%.banip} is false:
+							kick the argument 1 due to "%arg 2%"
+							set {Ntools.%arg 1%.banip} to true
+							ban argument 1 by ip
+							add "%arg 1%" to {Ntools.banlistip::*}
+							broadcast "{@tag} &bIP &c%ip of arg 1% &bzostalo zbanowane za &c%arg 2%"
+							stop
+						else:
+							send "{@tag} &cTo ip jest juz zbanowane!"
+							stop
+				else:
+					send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.banip)"
+					stop
+			else:
+				send "{@tag} &cPodaj powod!"
+				stop
+		else:
+			send "{@tag} &cPodaj ip!"
+			stop	
+	
+command /unbanip [<offlineplayer>]:
+	trigger:
+		if player has permission "Ntools.unban":
+			if {Ntools.%arg 1%.banip} is true:
+				unban argument 1 by ip
+				remove "%arg 1%" from {Ntools.banlistip::*}
+				set {Ntools.%arg 1%.banip} to false
+				broadcast "{@tag} &bIp &a%ip of arg 1% &bzostalo odbanowane!"
+				stop
+			else:
+				send "{@tag} &cTo ip nie zostalo zbanowane!"
+				stop
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.unban)"
+			stop
+			
+command /unban [<offlineplayer>]:
+	trigger:
+		if player has permission "Ntools.unban":
+			if {Ntools.%arg 1%.ban} is true:
+				unban argument 1
+				remove "%arg 1%" from {Ntools.banlist::*}
+				set {Ntools.%arg 1%.ban} to false
+				broadcast "{@tag} &bGracz &c%arg 1% &bzostal odbanowany!"
+				stop
+			else:
+				send "{@tag} &cTen gracz nie zostal zbanowany!"
+				stop
+		else:
+			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.unban)"
+			stop
