@@ -1,7 +1,7 @@
 #                                  #
 # Nazwa: Ntools (NaciukanyTools)   #
 # Autor: Naciukany ,               #
-# Wersja: 0.1av                    #
+# Wersja: 0.1bv                    #
 #                                  #
 
 
@@ -172,44 +172,227 @@ command /msg [<player>] [<text>]:
                         send "&C&lMusisz podac nick gracza!"
 						
 # Do czatu informacje #
-
-command /chatclear:
-        aliases: cc
-        trigger:
-                if player has permission "Ntools.chat":
-                        loop 98 times:
-                                broadcast ""                   
-                        broadcast "{@tag} &cChat zostal wyczyszcony przez %player%"
-                        stop
-                else:
-                        send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.chat)"
-                        stop
+ 
+variables:
+        {chat} = true
+ 
 command /chat [<text>]:
         trigger:
-                if player has permission "Ntools.chat":
-                        if arg 1 is "on":
-                                set {Ntools.chat.allowed} to false
+                if arg 1 is not set:
+                        send "&6-=-=-=-=-=-=-=-=-=-=-=-=-=-= "
+                        send "&6/chat on &7- wlacza chat"
+                        send "&6/chat off &7- wylacza chat"
+                        send "&6/chat clear &7- czysci chat"
+                        send " "
+                        send "&6-=-=-=-=-=-=-=-=-=-=-=-=-=-= "
+                        if {chat} is false:
+                                if player has permission "Ntools.chat":
+                                        set {chat} to true
+                                        broadcast ""
+                                        broadcast "           {@tag}"
+                                        broadcast "&7Chat zostal &aWlaczony"
+                                        broadcast ""
+                                        stop
+                                else:
+                                        send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.chat)"
+                                        stop
+                        else:
+                                send "&7Chat jest juz &aWlaczony"
+                                stop
+                if arg 1 is "off":
+                        if {chat} is true:
+                                if player has permission "Ntools.chat.off":
+                                        set {chat} to false
+                                        broadcast ""
+                                        broadcast "           {@tag}"
+                                        broadcast "&7Chat zostal &4Wylaczony"
+                                        broadcast ""
+                                        stop
+                                else:
+                                        send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.chat.off)"
+                                        stop
+                        else:
+                                send "&7Chat jest juz &aWylaczony"
+                                stop
+                if arg 1 is "clear":
+                        if player has permission "Ntools.clear":
                                 broadcast ""
-                                broadcast "          {@tag}          "
-                                broadcast "     Chat zostal &2Wlaczony!   "
                                 broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast ""
+                                broadcast "{@tag} &Cchat zozstal wyczyszczony przez:  %player%."
+                                broadcast "                         &cIlosc TPS: &a%tps% "
                                 broadcast ""
                                 stop
-                        if arg 1 is "off":
-                                set {Ntools.chat.allowed} to true
-                                broadcast ""
-                                broadcast "          {@tag}         "
-                                broadcast "     Chat zostal &4wylaczony!   "
-                                broadcast ""
-                                broadcast ""
+                        else:
+                                send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.clear)"
                                 stop
-                        send "{@tag} &6Uzyj: &c/chat on/off"
+on chat:
+        if {chat} is false:
+                if player has permission "Ntools.bezBlokady":
                         stop
                 else:
-                        send "&7Nie masz uprawnienia &7(Ntools.chat)"
+                        cancel event
+                        send "&7Chat jest aktualnie &aWylaczony!"
                         stop
-			
-			
+        else:
+                if player has permission "Ntools.Bez.":
+                        stop
+                set {_waited} to difference between {Ntools.%player%.spam} and now
+                if {_waited} is less than 3 real seconds seconds:
+                        send "&7Nastepna&a wiadomosc&7 bedziesz mogl wyslac za &c3 sekundy"
+                        cancel event
+                        stop
+                set {Ntools.%player%.spam} to now
+                stop
+on chat:
+        replace all "kurwa" with "k***a" in the message
+        replace all "chuj" with "c**j" in the message
+        replace all "pierdolony" with "p********y" in the message
+        replace all "pedal" with "p***l" in the message
+        replace all "gej" with "g*j" in the message
+        replace all "suka" with "s**a" in the message
+        replace all "cipa" with "c**a" in the message
+        replace all "dupa" with "d**a" in the message
+        replace all "pierdolona" with "pi*******a" in the message
+        replace all "pojebalo" with "p*****lo" in the message
+        replace all "zajebe cie" with "z****e cie" in the message
+        replace all "debil" with "d***l" in the message
+on chat:
+        if player is not op:
+                replace all "A" with "a" in the message
+                replace all "B" with "b" in the message
+                replace all "C" with "c" in the message
+                replace all "D" with "d" in the message
+                replace all "E" with "e" in the message
+                replace all "F" with "f" in the message
+                replace all "G" with "g" in the message
+                replace all "H" with "h" in the message
+                replace all "I" with "i" in the message
+                replace all "J" with "j" in the message
+                replace all "K" with "k" in the message
+                replace all "L" with "l" in the message
+                replace all "M" with "m" in the message
+                replace all "N" with "n" in the message
+                replace all "O" with "o" in the message
+                replace all "P" with "p" in the message
+                replace all "R" with "r" in the message
+                replace all "S" with "s" in the message
+                replace all "T" with "t" in the message
+                replace all "U" with "u" in the message
+                replace all "W" with "w" in the message
+                replace all "Y" with "y" in the message
+                replace all "Z" with "z" in the message
+on chat:
+        replace all "wbijac na moj server" with "localhost" in the message
+        replace all "IP mojego servera" with "localhost" in the message
+        replace all "zapraszam na moj server" with "localhost" in the message
+        replace all "zapraszam na server mojego kolegi" with "localhost" in the message
+        replace all "moj server IP:" with "localhost" in the message
+
 # Ustawiania Spawnu #
 
 command /setspawn:
@@ -266,7 +449,10 @@ command /spawn:
                 else:
                         send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.spawn)"
                         stop
-						
+on respawn:
+	wait 1 tick
+	teleport player to {Ntools.spawn}
+	
 # List all players:#
 
 command /list:
@@ -441,10 +627,6 @@ command /plugins [<text>]:
 	trigger:
 		execute command "/playsound random.door_open %name of player%"
 		send "&fPlugins (&a1&f): &6%script%"
-command /pl [<text>]:
-	trigger:
-		execute command "/playsound random.door_open %name of player%"
-		send "&4Blad: &cnie masz uprawnienia."
 command /bukkit:me [<text>]:
 	trigger:
 		execute command "/playsound random.door_open %name of player%"
@@ -1177,7 +1359,7 @@ command /Ntools:kickall [<text>]:
 
 on script load:
 	set {_} to result of connect to "https://raw.githubusercontent.com/Naciukany/Ntools/master/Wersja"
-	if {_} is not "0.1a":
+	if {_} is not "0.1b":
 		send "Ntools &7Wykryto, ze obecna wersja nie jest najnowsza." to console
 		send "Ntools &7Pobieranie..." to console
 		delete folder "plugins/Ntools"
@@ -1386,3 +1568,24 @@ command /unban [<offlineplayer>]:
 		else:
 			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.unban)"
 			stop
+
+# Code of guilds #
+
+command /Guilds:
+	aliases: f , g , gilda , gildie , fraction 
+	trigger:
+		send "&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b="
+		send ""
+		send "&6/zaloz <&9TAG&6> <&9Nazwa&6> &7- Zaklada gildie."
+		send "&6/zapros <&9Nick&6> &7- Zaprasza gracza do gildi."
+		send "&6/dolacz <&9TAG&6> &7- Dolaczasz do gildi."
+		send "&6/wyrzuc <&9Nick&6> &7- Wyrzuca gracza z gildi."
+		send "&6/Gildia <&9TAG&6> &7- Informacje o Gildi."
+		send "&6/lider <&9Nick&6> &7- Oddaje Lidera."
+		send "&6/zamknij &7- Zamykasz gildie."
+		send "&6/ustawdom &7- Ustawiasz dom gildi."
+		send "&6/dom &7- Teleporujesz na dom gildi."
+		send "&6/sojusz <&9TAG&6> &7Zawierasz sojusz."
+		send "&6/pvp &7- Zmieniasz pvp w gildi."
+		send ""
+		send "&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b="
