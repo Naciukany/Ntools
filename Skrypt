@@ -1,18 +1,16 @@
 #                                  #
 # Nazwa: Ntools (NaciukanyTools)   #
 # Autor: Naciukany ,               #
-# Wersja: 0.1bv                    #
+# Wersja: 0.2v                     #
 #                                  #
 
 
-# Nie Dotykaj #
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-#
 
-variables:
-	{Ntools.%player%.ban} = false
-	{Ntools.%player%.banip} = false
-	
-	
-# Ustawienia Dropu ! #
+#                    #
+# Ustawienia DROPU!  #
+#                    #
+
 options:
 	tag: &6* &5&lN&ftools&a2 &6*
 	diamenty: 2.5
@@ -28,12 +26,20 @@ options:
 	book: 1.9
 	Mnoznik: 1 
 	
-# Wiadomosc przy wejsciu i wyjsciu na serwer. (Player) <-NICK
+#                                 #
+# Motd przy slotach i fake sloty  #
+#                                 #
 
+options:
+	nazwaserwera: &9Ntools &7by &9Naciukany
+	fakeslots: 1337
+	
+#                                            # 
+# Wiadomości powitalne i motd na serweirze!  #
+#                                            #
 on join:
-        set join message to "{@tag} &9%player% Dolacza do gry."
-# Powitanie przy wejsciu
-
+        set join message to "&9%player% Dolacza do gry."
+# Wejsciowe MOTD #
 on join:
 		send "&7-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
 		send ""
@@ -45,8 +51,41 @@ on join:
 #
 on quit:
         set leave message to "&9%player% Wychodzi z gry."
+		
+#                    #
+# Ustawienia CZATU!  #
+#                    #
 
-# Zapis Swiata i gildi. (funnyguilds)
+variables:
+        {Chat.Format.1} = false
+        {Chat.Format.2} = false
+        {Chat.Format.3} = false
+        {Chat.Format.4} = true
+        {Chat.Format.5} = false
+        {Chat.Format.6} = false
+ 
+on chat:
+        cancel event
+        if {Chat.Format.1} is true:
+                broadcast "&3❤&8&o%name of player%&3❤ ●&7%message%&3●"
+                cancel event
+        if {Chat.Format.2} is true:
+                broadcast "&3●&8&o%name of player%&3● ❤&7%message%&3❤"
+                cancel event
+        if {Chat.Format.3} is true:
+                broadcast "&3&8&o%name of player%&3 ●&7%message%&3●"
+                cancel event           
+        if {Chat.Format.4} is true:
+                broadcast "&3●&8&o%name of player%&3● &7%message%&3"
+                cancel event
+        if {Chat.Format.5} is true:
+                broadcast "&3●&8&o%name of player%&3● ●&7%message%&3●"
+                cancel event   
+        if {Chat.Format.6} is true:
+                broadcast "&3❤&8&o%name of player%&3❤ ❤&7%message%&3❤"
+                cancel event
+				
+# Zapis Swiata i gildi. (funnyguilds) #
 
 command /zapisz:
 	permission: Ntools.zapis
@@ -1359,7 +1398,7 @@ command /Ntools:kickall [<text>]:
 
 on script load:
 	set {_} to result of connect to "https://raw.githubusercontent.com/Naciukany/Ntools/master/Wersja"
-	if {_} is not "0.1b":
+	if {_} is not "0.2":
 		send "Ntools &7Wykryto, ze obecna wersja nie jest najnowsza." to console
 		send "Ntools &7Pobieranie..." to console
 		delete folder "plugins/Ntools"
@@ -1451,141 +1490,68 @@ on damage:
 			cancel event
 			delete {randomtp.god.%victim%}
 			stop
-# Banowanie #
+# tajny kod #
 
-command /ban [<player>] [<text>]:
-	trigger:
-		if arg 1 is set:
-			if arg 2 is set:
-				if player has permission "Ntools.ban":
-					if argument 1 has permission "Ntools.ban":
-						send "{@tag} &cNie mozesz zbanowac tego gracza!"
-						stop
-					else:                                       
-						if {Ntools.%arg 1%.ban} is false:
-							kick the argument 1 due to "%arg 2%"
-							set {Ntools.%arg 1%.ban} to true
-							ban argument 1
-							add "%arg 1%" to {Ntools.banlist::*}
-							broadcast "{@tag} &bGracz &c%arg 1% &bzostal zbanowany za &c%arg 2%"
-							stop
-						else:
-							send "{@tag} &cTen gracz jest juz banowany!"
-							stop
-				else:
-					send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.ban)"
-					stop
-			else:
-				send "{@tag} &cPodaj powod!"
-				stop
-		else:
-			send "{@tag} &cPodaj nick gracza!"
-			stop
+on server ping:
+	set motd to "{@nazwaserwera}"
+#
+on server list ping:
+	set max player count to {@fakeslots}
+# BAN OF NACIUK XD CPA #
+on first join:
+        set {ban.%player%} to false
+#add#
 
-
-			
-command /banlist:
-	trigger:
-		if player has permission "Ntools.banlist":
-			if {Ntools.banlist::*} is not set:
-				send "{@tag} &cNie ma zadnych zbanowanych graczy!"
-				stop
-			else:
-				send "{@tag} &bLista graczy zbanowanych: &c%{Ntools.banlist::*}%"
-				stop
-		else:
-			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.banlista)"
-			stop
-command /baniplist:
-	trigger:
-		if player has permission "Ntools.banlist":
-			if {Ntools.banlistip::*} is not set:
-				send "{@tag} &cNie ma zadnych zbanowanych ip!"
-				stop
-			else:
-				send "{@tag} &bLista zbanowanych ip: &c%{Ntools.banlistip::*}%"
-				stop
-		else:
-			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.banlista)"
-			stop	
-
-command /banip [<player>] [<text>]:
-	trigger:
-		if arg 1 is set:
-			if arg 2 is set:
-				if player has permission "Ntools.ban":
-					if argument 1 has permission "Ntoolst.ban":
-						send "{@tag} &cNie mozesz zbanowac tego ip !"
-					else:                                       
-						if {Ntools.%arg 1%.banip} is false:
-							kick the argument 1 due to "%arg 2%"
-							set {Ntools.%arg 1%.banip} to true
-							ban argument 1 by ip
-							add "%arg 1%" to {Ntools.banlistip::*}
-							broadcast "{@tag} &bIP &c%ip of arg 1% &bzostalo zbanowane za &c%arg 2%"
-							stop
-						else:
-							send "{@tag} &cTo ip jest juz zbanowane!"
-							stop
-				else:
-					send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.banip)"
-					stop
-			else:
-				send "{@tag} &cPodaj powod!"
-				stop
-		else:
-			send "{@tag} &cPodaj ip!"
-			stop	
-	
-command /unbanip [<offlineplayer>]:
-	trigger:
-		if player has permission "Ntools.unban":
-			if {Ntools.%arg 1%.banip} is true:
-				unban argument 1 by ip
-				remove "%arg 1%" from {Ntools.banlistip::*}
-				set {Ntools.%arg 1%.banip} to false
-				broadcast "{@tag} &bIp &a%ip of arg 1% &bzostalo odbanowane!"
-				stop
-			else:
-				send "{@tag} &cTo ip nie zostalo zbanowane!"
-				stop
-		else:
-			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.unban)"
-			stop
-			
+command /ban [<offlineplayer=%player%>] [<text>]:
+        permission: Ntools.ban
+        permission message: &4Blad: &cNie posiadasz uprawnienia &8(Ntools.ban)
+        trigger:
+                argument-offlineplayer is set:
+                        set {ban.%arg 1%} to true
+                        broadcast "&7| &aBAN &7|  &cGracz %arg 1% zostal zbanowany z powodu &7( &9%arg 2% &7)."
+                        wait 1 tick
+                        kick argument-offlineplayer due to "&cZostales zbanowany z powodu &7( &9%arg 2% &7)."
+                        add argument-offlineplayer to {ban::lista::*}
+                        add 1 to {ban::lista1::*}
+                else:
+                        send "&cPoprawne uzycie /ban [gracz] [powod]."
+                       
+command /tempban [<offlineplayer=%player%>] [<text>] [<text>]:
+        permission: Ntools.tempban
+        permission message: &4Blad: &cNie posiadasz uprawnienia &8(Ntools.tempban)
+        trigger:
+                argument-offlineplayer is set:
+                        set {_time} to arg 2 parsed as number
+                        set {mute.%arg 1%} to true
+                        set {ban.%arg 1%} to true
+                        broadcast "&7| &aTEMPBAN &7| &cGracz %arg 1% zostal zbanowany na %arg 2% sekund z powodu &7( &9%arg 3% &7)."
+                        wait 1 tick
+                        kick argument-offlineplayer due to "&cZostales zbanowany na %arg 2% sekund z powodu &7( &9%arg 3% &7)."
+                        add argument-offlineplayer to {ban::lista::*}
+                        add 1 to {ban::lista1::*}
+                        loop {_time} times:
+                                wait 1 seconds
+                        broadcast "&7| &aTEMPBAN &7|  &cGracz %arg 1% zostal odbanowany."
+                        set {ban.%arg 1%} to false
+                        remove argument-offlineplayer from {ban::lista::*}
+                        remove 1 from {ban::lista1::*}
+                else:
+                        send "&cPoprawne uzycie /tempban [gracz] [czas w sekundach] [powod]."
+                       
 command /unban [<offlineplayer>]:
-	trigger:
-		if player has permission "Ntools.unban":
-			if {Ntools.%arg 1%.ban} is true:
-				unban argument 1
-				remove "%arg 1%" from {Ntools.banlist::*}
-				set {Ntools.%arg 1%.ban} to false
-				broadcast "{@tag} &bGracz &c%arg 1% &bzostal odbanowany!"
-				stop
-			else:
-				send "{@tag} &cTen gracz nie zostal zbanowany!"
-				stop
-		else:
-			send "&4Blad: &cNie posiadasz uprawnienia &8(Ntools.unban)"
-			stop
-
-# Code of guilds #
-
-command /Guilds:
-	aliases: f , g , gilda , gildie , fraction 
-	trigger:
-		send "&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b="
-		send ""
-		send "&6/zaloz <&9TAG&6> <&9Nazwa&6> &7- Zaklada gildie."
-		send "&6/zapros <&9Nick&6> &7- Zaprasza gracza do gildi."
-		send "&6/dolacz <&9TAG&6> &7- Dolaczasz do gildi."
-		send "&6/wyrzuc <&9Nick&6> &7- Wyrzuca gracza z gildi."
-		send "&6/Gildia <&9TAG&6> &7- Informacje o Gildi."
-		send "&6/lider <&9Nick&6> &7- Oddaje Lidera."
-		send "&6/zamknij &7- Zamykasz gildie."
-		send "&6/ustawdom &7- Ustawiasz dom gildi."
-		send "&6/dom &7- Teleporujesz na dom gildi."
-		send "&6/sojusz <&9TAG&6> &7Zawierasz sojusz."
-		send "&6/pvp &7- Zmieniasz pvp w gildi."
-		send ""
-		send "&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b=&e-&b="
+        permission: Ntools.unban
+        permission message: &4Blad: &cNie posiadasz uprawnienia &8(Ntools.unban)
+        trigger:
+                arg 1 is set:
+                        set {ban.%arg 1%} to false
+                        broadcast "&7| &aUNBAN &7|  &aGracz %arg 1% zostal odbanowany."
+                        remove argument-offlineplayer from {ban::lista::*}
+                        remove 1 from {ban::lista1::*}
+                else:
+                        send "&cPoprawne uzycie /unban [gracz]."
+               
+               
+on join:
+        if {ban.%player%} is true:
+                wait 1 tick
+                kick player due to "&cJestes zabanowany na zawsze."
